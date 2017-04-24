@@ -1,0 +1,24 @@
+{
+  "name": "litenote",
+  "version": "1.0.0",
+  "description": "LiteNote ==============================",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xyphergrim/lite-note.git"
+  },
+  "author": "John Clancy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xyphergrim/lite-note/issues"
+  },
+  "homepage": "https://github.com/xyphergrim/lite-note#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mongoose": "^4.9.6"
+  }
+}
