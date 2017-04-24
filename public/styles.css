@@ -1,4 +1,17 @@
+body {
+    padding-top: 70px;
+}
+
 .navbar {
     background-color: #fff;
     border: none;
+}
+
+.thumbnail {
+    text-align: center;
+}
+
+#user-input {
+    margin-left: 10px;
+    margin-right: 10px;
 }
