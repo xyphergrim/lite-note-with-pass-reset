@@ -11,7 +11,25 @@ body {
     text-align: center;
 }
 
+.form-style {
+    width: 30%;
+    margin: 30px auto;
+    /*text-align: center;*/
+}
+
+.login-header {
+    text-align: center;
+}
+
+.btn.active:focus {
+    outline: none;
+}
+
 #new-note-form {
     margin-left: 20px;
     margin-right: 20px;
+}
+
+#register-div {
+    opacity: 0;
 }
