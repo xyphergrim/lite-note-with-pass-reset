@@ -1,7 +1,17 @@
 <% include ./partials/header %>
 
 <% if(!currentUser) { %>
-    <!-- show nothing -->
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-3">LiteNote</h1>
+            <p class="lead">Welcome to LiteNote, the lightweight note-taking, checklist-marking, and reminder-making web app!</p>
+            <hr class="my-4">
+            <p>
+                LiteNote was designed to be as simple, intuitive, and easy to use as possible. We want you to be able to jump in,
+                jot down any notes or to-dos that you need, set a reminder for yourself, and get back out into the world.
+            </p>
+        </div>
+    </div>
 <% } else { %>
     <!-- user input -->
     <form id="new-note-form" action="/notes" method="POST">
@@ -14,13 +24,15 @@
     <div class="container-fluid">
         <div class="row" id="note-row">
             <% notes.forEach(function(note) { %>
-                <div class="col-md-2" id="note-col">
-                    <div class="card">
-                        <div class="card-block">
-                            <%= note.text %>
+                <% if(note.author.id.equals(currentUser._id)) { %>
+                    <div class="col-md-2" id="note-col">
+                        <div class="card">
+                            <div class="card-block">
+                                <%= note.text %>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <% } %>
             <% }); %>
         </div>
     </div>

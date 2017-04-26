@@ -46,26 +46,18 @@ app.get("/", function(req, res){
     res.redirect("/notes");
 });
 
-// LOGIN ROUTES
-// app.get("/login", function(req, res){
-//     res.render("login");
-// });
-
-// app.post("/login", passport.authenticate("local", {
-//     successRedirect: "/notes",
-//     failureRedirect: "/login",
-//     failureFlash: true
-//     }), function(req, res){
-// });
-
-// NEW LOGIN ROUTES
-app.post("/login", passport.authenticate("local"));
-
-app.post("/login", passport.authenticate("local", {
-    successRedirect: "/notes",
-    failureRedirect: "/notes",
-    failureFlash: true
-}));
+// LOGIN ROUTE
+app.post("/login", function(req, res, next){
+    passport.authenticate("local", function(err, user, info){
+        if(err) { return res.status(500).json("ERROR!"); }
+        if(!user) { return res.status(500).json("ANOTHER ERROR!"); }
+        req.logIn(user, function(err){
+            if(err) { return res.status(500).json("MORE ERROR STUFF!"); }
+            res.status(200).json({message: "Welcome back to LiteNote " + user.profileName});
+            console.log(user.username + " is logged in");
+        });
+    })(req, res, next);
+});
 
 // REGISTER ROUTE
 app.post("/register", function(req, res){
@@ -73,41 +65,33 @@ app.post("/register", function(req, res){
     
     User.register(newUser, req.body.password, function(err, user){
         if(err) {
-            // req.flash("error", "Email has already been registered");
+            res.status(500).json({message: "Server error!", error: err});
             console.log(err);
-            // return res.redirect("/login");
         }
-        // passport.authenticate("local")(req, res, function(){
-        //     req.flash("success", "Welcome to LiteNote " + user.profileName + "!");
-        //     res.redirect("/notes");
-        // });
-        
-        passport.authenticate("local", {
-            successRedirect: "/notes",
-            failureRedirect: "/notes",
-            failureFlash: true
+        passport.authenticate("local")(req, res, function(){
+            res.status(200).json({message: "Welcome to LiteNote!"});
+            console.log("new user registered: " + user.username);
         });
     });
 });
 
-// app.post("/register", passport.authenticate("local"));
-
-// app.post("/register", passport.authenticate("local", {
-//     successRedirect: "/notes",
-//     failureRedirect: "/notes",
-//     failureFlash: true
-// }));
+// LOGOUT ROUTE
+app.get("/logout", function(req, res){
+    req.logout();
+    res.status(200).json({message: "Logout Success!"});
+    console.log("user has logged off");
+})
 
 // had this --> middleware.isLoggedIn,
 app.get("/notes", function(req, res){
-    Note.find({}, null, {sort: {createdAt: -1}}, function(err, allNotes){
+    Note.find({}, null, {sort: {createdAt: -1}}, function(err, notes){
         if(err) {
             console.log(err);
         } else {
             if(req.xhr) {
-                res.json(allNotes);
+                res.json(notes);
             } else {
-                res.render("index", {notes: allNotes});
+                res.render("index", {notes: notes});
             }
         }
     });
@@ -115,12 +99,19 @@ app.get("/notes", function(req, res){
 
 app.post("/notes", function(req, res){
     req.body.note.text = req.sanitize(req.body.note.text);
-    var formData = req.body.note;
-    Note.create(formData, function(err, newNote){
+    var formData = req.body.note.text;
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    }
+    
+    var newNote = {text: formData, author: author};
+    
+    Note.create(newNote, function(err, newlyCreated){
         if(err) {
             console.log(err);
         } else {
-            res.json(newNote);
+            res.json(newlyCreated);
         }
     });
 });

@@ -57,7 +57,10 @@
                   <!--  <button type="button" class="btn btn-secondary my-2 my-sm-0"><i class="fa fa-id-card-o"></i> Register</button>-->
                   <!--</li>-->
                 <% } else { %>
-                  <p class="navbar-text">Signed in as <%= currentUser.profileName %></p>
+                  <span class="navbar-text">Signed in as <%= currentUser.profileName %></span>
+                  <form class="form-inline">
+                    <button type="button" class="btn btn-secondary btn-sm my-2 my-sm-0" id="logout-btn">Logout</button>
+                  </form>
                 <% } %>
                 <!--<li class="nav-item active">-->
                 <!--  <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
