@@ -47,16 +47,25 @@ app.get("/", function(req, res){
 });
 
 // LOGIN ROUTES
-app.get("/login", function(req, res){
-    res.render("login");
-});
+// app.get("/login", function(req, res){
+//     res.render("login");
+// });
+
+// app.post("/login", passport.authenticate("local", {
+//     successRedirect: "/notes",
+//     failureRedirect: "/login",
+//     failureFlash: true
+//     }), function(req, res){
+// });
+
+// NEW LOGIN ROUTES
+app.post("/login", passport.authenticate("local"));
 
 app.post("/login", passport.authenticate("local", {
     successRedirect: "/notes",
-    failureRedirect: "/login",
+    failureRedirect: "/notes",
     failureFlash: true
-    }), function(req, res){
-});
+}));
 
 // REGISTER ROUTE
 app.post("/register", function(req, res){
@@ -64,18 +73,33 @@ app.post("/register", function(req, res){
     
     User.register(newUser, req.body.password, function(err, user){
         if(err) {
-            req.flash("error", "Email has already been registered");
+            // req.flash("error", "Email has already been registered");
             console.log(err);
-            return res.redirect("/login");
+            // return res.redirect("/login");
         }
-        passport.authenticate("local")(req, res, function(){
-            req.flash("success", "Welcome to LiteNote " + user.profileName + "!");
-            res.redirect("/notes");
+        // passport.authenticate("local")(req, res, function(){
+        //     req.flash("success", "Welcome to LiteNote " + user.profileName + "!");
+        //     res.redirect("/notes");
+        // });
+        
+        passport.authenticate("local", {
+            successRedirect: "/notes",
+            failureRedirect: "/notes",
+            failureFlash: true
         });
     });
 });
 
-app.get("/notes", middleware.isLoggedIn, function(req, res){
+// app.post("/register", passport.authenticate("local"));
+
+// app.post("/register", passport.authenticate("local", {
+//     successRedirect: "/notes",
+//     failureRedirect: "/notes",
+//     failureFlash: true
+// }));
+
+// had this --> middleware.isLoggedIn,
+app.get("/notes", function(req, res){
     Note.find({}, null, {sort: {createdAt: -1}}, function(err, allNotes){
         if(err) {
             console.log(err);

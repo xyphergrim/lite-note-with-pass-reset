@@ -25,11 +25,19 @@ body {
     outline: none;
 }
 
+#login-btn {
+    margin-right: 10px;
+}
+
 #new-note-form {
     margin-left: 20px;
     margin-right: 20px;
 }
 
-#register-div {
-    opacity: 0;
+#note-col {
+    margin-bottom: 10px;
 }
+
+/*#register-div {*/
+/*    opacity: 0;*/
+/*}*/

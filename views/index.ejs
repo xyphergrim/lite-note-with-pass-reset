@@ -1,25 +1,29 @@
 <% include ./partials/header %>
 
-<!-- user input -->
-<form id="new-note-form" action="/notes" method="POST">
-    <div class="form-group">
-        <input type="text" class="form-control" placeholder="What's on your mind?" name="note[text]"></input>
-    </div>
-</form>
-
-<!-- content -->
-<div class="container-fluid">
-    <div class="row" id="note-row">
-        <% notes.forEach(function(note) { %>
-            <div class="col-md-2">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <%= note.text %>
+<% if(!currentUser) { %>
+    <!-- show nothing -->
+<% } else { %>
+    <!-- user input -->
+    <form id="new-note-form" action="/notes" method="POST">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="What's on your mind?" name="note[text]"></input>
+        </div>
+    </form>
+    
+    <!-- content -->
+    <div class="container-fluid">
+        <div class="row" id="note-row">
+            <% notes.forEach(function(note) { %>
+                <div class="col-md-2" id="note-col">
+                    <div class="card">
+                        <div class="card-block">
+                            <%= note.text %>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <% }); %>
+            <% }); %>
+        </div>
     </div>
-</div>
+<% } %>
         
 <% include ./partials/footer %>
