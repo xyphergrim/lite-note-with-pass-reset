@@ -47,17 +47,26 @@ app.get("/", function(req, res){
 });
 
 // LOGIN ROUTE
-app.post("/login", function(req, res, next){
-    passport.authenticate("local", function(err, user, info){
-        if(err) { return res.status(500).json("ERROR!"); }
-        if(!user) { return res.status(500).json("ANOTHER ERROR!"); }
-        req.logIn(user, function(err){
-            if(err) { return res.status(500).json("MORE ERROR STUFF!"); }
-            res.status(200).json({message: "Welcome back to LiteNote " + user.profileName});
-            console.log(user.username + " is logged in");
-        });
-    })(req, res, next);
+app.post("/login", passport.authenticate("local", 
+    {
+        successRedirect: "/notes",
+        failureRedirect: "/notes",
+        failureFlash: true
+    }), function(req, res){
 });
+
+// FOR AJAX LOGIN
+// app.post("/login", function(req, res, next){
+//     passport.authenticate("local", function(err, user, info){
+//         if(err) { return res.status(500).json("ERROR!"); }
+//         if(!user) { return res.status(500).json("ANOTHER ERROR!"); }
+//         req.logIn(user, function(err){
+//             if(err) { return res.status(500).json("MORE ERROR STUFF!"); }
+//             res.status(200).json({message: "Welcome back to LiteNote " + user.profileName});
+//             console.log(user.username + " is logged in");
+//         });
+//     })(req, res, next);
+// });
 
 // REGISTER ROUTE
 app.post("/register", function(req, res){
@@ -65,21 +74,38 @@ app.post("/register", function(req, res){
     
     User.register(newUser, req.body.password, function(err, user){
         if(err) {
-            res.status(500).json({message: "Server error!", error: err});
+            req.flash("error", "Email has already been registered");
             console.log(err);
+            return res.redirect("/notes");
         }
         passport.authenticate("local")(req, res, function(){
-            res.status(200).json({message: "Welcome to LiteNote!"});
-            console.log("new user registered: " + user.username);
+            req.flash("success", "Welcome to LiteNote " + user.profileName + "!");
+            res.redirect("/notes");
         });
     });
 });
 
+// FOR AJAX REGISTER
+// app.post("/register", function(req, res){
+//     var newUser = new User({username: req.body.username, profileName: req.body.profileName});
+    
+//     User.register(newUser, req.body.password, function(err, user){
+//         if(err) {
+//             res.status(500).json({message: "Server error!", error: err});
+//             console.log(err);
+//         }
+//         passport.authenticate("local")(req, res, function(){
+//             res.status(200).json({message: "Welcome to LiteNote!"});
+//             console.log("new user registered: " + user.username);
+//         });
+//     });
+// });
+
 // LOGOUT ROUTE
 app.get("/logout", function(req, res){
     req.logout();
-    res.status(200).json({message: "Logout Success!"});
-    console.log("user has logged off");
+    console.log("logout successful");
+    res.redirect("/notes");
 })
 
 // had this --> middleware.isLoggedIn,
