@@ -46,6 +46,21 @@ app.get("/", function(req, res){
     res.redirect("/notes");
 });
 
+// had this --> middleware.isLoggedIn,
+app.get("/notes", function(req, res){
+    Note.find({}, null, {sort: {createdAt: -1}}, function(err, notes){
+        if(err) {
+            console.log(err);
+        } else {
+            if(req.xhr) {
+                res.json(notes);
+            } else {
+                res.render("index", {notes: notes});
+            }
+        }
+    });
+});
+
 // LOGIN ROUTE
 app.post("/login", passport.authenticate("local", 
     {
@@ -108,21 +123,6 @@ app.get("/logout", function(req, res){
     res.redirect("/notes");
 })
 
-// had this --> middleware.isLoggedIn,
-app.get("/notes", function(req, res){
-    Note.find({}, null, {sort: {createdAt: -1}}, function(err, notes){
-        if(err) {
-            console.log(err);
-        } else {
-            if(req.xhr) {
-                res.json(notes);
-            } else {
-                res.render("index", {notes: notes});
-            }
-        }
-    });
-});
-
 app.post("/notes", function(req, res){
     req.body.note.text = req.sanitize(req.body.note.text);
     var formData = req.body.note.text;
@@ -131,13 +131,29 @@ app.post("/notes", function(req, res){
         username: req.user.username
     }
     
-    var newNote = {text: formData, author: author};
+    console.log(formData);
     
-    Note.create(newNote, function(err, newlyCreated){
+    if(formData !== undefined) {
+        if(formData.trim() !== "") {
+            var newNote = {text: formData, author: author};
+        
+            Note.create(newNote, function(err, newlyCreated){
+                if(err) {
+                    console.log(err);
+                } else {
+                    res.json(newlyCreated);
+                }
+            });
+        }
+    }
+});
+
+app.delete("/notes/:id", function(req, res){
+    Note.findByIdAndRemove(req.params.id, function(err, note){
         if(err) {
             console.log(err);
         } else {
-            res.json(newlyCreated);
+            res.json(note);
         }
     });
 });

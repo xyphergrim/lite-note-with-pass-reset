@@ -21,9 +21,18 @@ body {
     text-align: center;
 }
 
-/*.btn.active:focus {*/
-/*    outline: none;*/
-/*}*/
+.col-md-2 {
+    margin-bottom: 15px;
+}
+
+.delete-card-btn {
+    border: none;
+}
+
+.delete-card-btn:focus {
+    box-shadow: none;
+    /*-webkit-box-shadow: none;*/
+}
 
 #login-btn {
     margin-right: 10px;
@@ -36,8 +45,4 @@ body {
 #new-note-form {
     margin-left: 20px;
     margin-right: 20px;
-}
-
-#note-col {
-    margin-bottom: 15px;
 }

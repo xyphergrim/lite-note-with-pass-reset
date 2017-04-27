@@ -25,10 +25,15 @@
         <div class="row" id="note-row">
             <% notes.forEach(function(note) { %>
                 <% if(note.author.id.equals(currentUser._id)) { %>
-                    <div class="col-md-2" id="note-col">
+                    <div class="col-md-2">
                         <div class="card">
                             <div class="card-block">
-                                <%= note.text %>
+                                <div class="text-right">
+                                    <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="<%= note._id %>">
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <p class="card-text <%= note._id %>"><%= note.text %></p>
                             </div>
                         </div>
                     </div>
