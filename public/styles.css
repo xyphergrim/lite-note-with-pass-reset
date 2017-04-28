@@ -12,6 +12,8 @@ textarea {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    
+    background-color: #FFFFA5;
 }
 
 .navbar {
@@ -39,6 +41,7 @@ textarea {
 
 .delete-card-btn {
     border: none;
+    background-color: #FFFFA5;
 }
 
 .delete-card-btn:focus {
@@ -48,6 +51,7 @@ textarea {
 
 .card {
     box-shadow: 8px 8px 20px #888888;
+    background-color: #FFFFA5;
 }
 
 #login-btn {
@@ -56,4 +60,8 @@ textarea {
 
 #logout-btn {
     margin-left: 10px;
+}
+
+#done-btn {
+    background-color: #FFFFA5;
 }
