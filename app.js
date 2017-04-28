@@ -14,8 +14,6 @@ var express = require("express"),
 var middlewareObj = {};
     
 mongoose.connect(process.env.DATABASEURL);
-// mongoose.connect("mongodb://john:Maverick8@ds123361.mlab.com:23361/litenote");
-// mongodb://john:Maverick8@ds123361.mlab.com:23361/litenote
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 app.use(express.static(__dirname + "/public"));
