@@ -2,6 +2,18 @@ body {
     padding-top: 70px;
 }
 
+textarea {
+    /*width: 100%;*/
+    resize: none;
+    border: none;
+    overflow: auto;
+    outline: none;
+    
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
 .navbar {
     background-color: #fff;
     border: none;
@@ -34,15 +46,14 @@ body {
     /*-webkit-box-shadow: none;*/
 }
 
+.card {
+    box-shadow: 8px 8px 20px #888888;
+}
+
 #login-btn {
     margin-right: 10px;
 }
 
 #logout-btn {
     margin-left: 10px;
-}
-
-#new-note-form {
-    margin-left: 20px;
-    margin-right: 20px;
 }

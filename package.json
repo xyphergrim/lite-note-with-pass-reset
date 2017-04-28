@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/xyphergrim/lite-note#readme",
   "dependencies": {
+    "autosize": "^3.0.20",
     "body-parser": "^1.17.1",
     "connect-flash": "^0.1.1",
     "ejs": "^2.5.6",

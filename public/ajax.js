@@ -1,6 +1,8 @@
-/* global $ */
+/* global $ autosize */
 
 $(document).ready(function(){
+    $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
+    
     $("#register-btn").on("click", function(){
         $("#login-btn").removeClass("active");
         $("#register-btn").addClass("active");
@@ -21,6 +23,70 @@ $(document).ready(function(){
         $("#new-user-form").find(".form-control").val('');
     });
     
+    $("textarea").on("focus", function(){
+        // var width = $("textarea").width();
+        // console.log(width);
+        autosize($("textarea"));
+    });
+    
+    $("#new-note-form").submit(function(e){
+      e.preventDefault();
+       
+      var noteItem = $(this).serialize();
+      
+      $.post("/notes", noteItem, function(data){
+        //   debugger
+        $("#user-input").after(
+         `
+        <div class="col-md-2">
+            <div class="card">
+                <div class="card-block">
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
+                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <p class="card-text ${data._id}">${data.text}</p>
+                </div>
+            </div>
+        </div>
+         `
+        );
+        
+        // console.log($(".delete-card-btn").attr("class"));
+        
+        $("#new-note-form").find("textarea").val('');
+      });
+    });
+    
+    $("#note-row").on("click", ".card-text", function(){
+        // alert("clicked on card-text!");
+        
+        // console.log($("p").attr("class"));
+    });
+    
+    $("#note-row").on("click", ".delete-card-btn", function(){
+        // alert("button clicked!");
+        
+        var confirmResponse = confirm("Delete this card?");
+        
+        if(confirmResponse) {
+            var $itemToDelete = $(this).closest(".col-md-2");
+            
+            $.ajax({
+                type: "DELETE",
+                url: "/notes/" + $(this).attr("data-id"),
+                itemToDelete: $itemToDelete,
+                success: function(data){
+                    this.itemToDelete.remove();
+                }
+            });
+        }
+    });
+});
+
+
+
     // $("#logout-btn").on("click", function(){
     //     $.get("/logout", function(data){});
     // });
@@ -110,59 +176,3 @@ $(document).ready(function(){
     //         );
     //     });
     // });
-    
-    $("#new-note-form").submit(function(e){
-      e.preventDefault();
-       
-      var noteItem = $(this).serialize();
-      
-      $.post("/notes", noteItem, function(data){
-        //   debugger
-        $("#note-row").prepend(
-         `
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-block">
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
-                            <i class="fa fa-trash-o" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <p class="card-text ${data._id}">${data.text}</p>
-                </div>
-            </div>
-        </div>
-         `
-        );
-        
-        // console.log($(".delete-card-btn").attr("class"));
-        
-        $("#new-note-form").find(".form-control").val('');
-      });
-    });
-    
-    $("#note-row").on("click", ".card-text", function(){
-        // alert("clicked on card-text!");
-        
-        // console.log($("p").attr("class"));
-    });
-    
-    $("#note-row").on("click", ".delete-card-btn", function(){
-        // alert("button clicked!");
-        
-        var confirmResponse = confirm("Delete this card?");
-        
-        if(confirmResponse) {
-            var $itemToDelete = $(this).closest(".col-md-2");
-            
-            $.ajax({
-                type: "DELETE",
-                url: "/notes/" + $(this).attr("data-id"),
-                itemToDelete: $itemToDelete,
-                success: function(data){
-                    this.itemToDelete.remove();
-                }
-            });
-        }
-    });
-});
