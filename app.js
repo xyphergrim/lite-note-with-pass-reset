@@ -123,6 +123,7 @@ app.get("/logout", function(req, res){
     res.redirect("/notes");
 })
 
+// POST ROUTE
 app.post("/notes", function(req, res){
     req.body.note.text = req.sanitize(req.body.note.text);
     var formData = req.body.note.text;
@@ -148,6 +149,7 @@ app.post("/notes", function(req, res){
     }
 });
 
+// DELETE ROUTE
 app.delete("/notes/:id", function(req, res){
     Note.findByIdAndRemove(req.params.id, function(err, note){
         if(err) {
