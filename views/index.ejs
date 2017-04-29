@@ -45,6 +45,12 @@
                                         <i class="fa fa-trash-o" aria-hidden="true"></i>
                                     </button>
                                 </div>
+                                <form class="edit-note-form" action="/notes/<%= note._id %>" method="POST">
+                                    <textarea value="<%= note.text %>" name="note[text]"></textarea>
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+                                    </div>
+                                </form>
                                 <p class="card-text <%= note._id %>"><%= note.text %></p>
                             </div>
                         </div>

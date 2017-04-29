@@ -58,6 +58,10 @@ textarea {
     white-space: pre-wrap;
 }
 
+.edit-note-form {
+    display: none;
+}
+
 #login-btn {
     margin-right: 10px;
 }
@@ -67,5 +71,9 @@ textarea {
 }
 
 #done-btn {
+    background-color: #FFFFA5;
+}
+
+#update-btn {
     background-color: #FFFFA5;
 }

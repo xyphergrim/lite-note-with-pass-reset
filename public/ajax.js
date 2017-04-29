@@ -1,6 +1,13 @@
 /* global $ autosize */
 
 $(document).ready(function(){
+    // $(document).click(function(e){
+    //     // check for left mouse button
+    //     if(e.which === 1) {
+            
+    //     }
+    // });
+    
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
     
     $("#register-btn").on("click", function(){
@@ -46,6 +53,12 @@ $(document).ready(function(){
                             <i class="fa fa-trash-o" aria-hidden="true"></i>
                         </button>
                     </div>
+                    <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                        <textarea name="note[text]">${data.text}</textarea>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+                        </div>
+                    </form>
                     <p class="card-text ${data._id}">${data.text}</p>
                 </div>
             </div>
@@ -60,9 +73,22 @@ $(document).ready(function(){
     });
     
     $("#note-row").on("click", ".card-text", function(){
-        // alert("clicked on card-text!");
-        
-        // console.log($("p").attr("class"));
+        var currentForm = $(this).siblings(".edit-note-form");
+
+        $(this).css("display", "none");
+        currentForm.toggle();
+        currentForm.children("textarea").focus();
+    });
+    
+    // take focus off of edit-note-form if clicked outside of form
+    $(document).click(function(event) { 
+        if(!$(event.target).closest('.edit-note-form').length) {
+            if($('.edit-note-form').is(":focus")) {
+                $('.edit-note-form').blur();
+                // $(".edit-note-form").css("display", "none");
+                // $(".edit-note-form").siblings(".card-text").css("dispaly", "show");
+            }
+        }        
     });
     
     $("#note-row").on("click", ".delete-card-btn", function(){
