@@ -1,13 +1,6 @@
 /* global $ autosize */
 
 $(document).ready(function(){
-    // $(document).click(function(e){
-    //     // check for left mouse button
-    //     if(e.which === 1) {
-            
-    //     }
-    // });
-    
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
     
     $("#register-btn").on("click", function(){
@@ -31,9 +24,12 @@ $(document).ready(function(){
     });
     
     $("textarea").on("focus", function(){
-        // var width = $("textarea").width();
-        // console.log(width);
-        autosize($("textarea"));
+        // console.log("inside textarea");
+        
+        var ta = $("textarea");
+        
+        autosize(ta);
+        autosize.update(ta);
     });
     
     $("#new-note-form").submit(function(e){
@@ -78,17 +74,65 @@ $(document).ready(function(){
         $(this).css("display", "none");
         currentForm.toggle();
         currentForm.children("textarea").focus();
+        
+        var ta = $("textarea");
+        
+        autosize(ta);
+        autosize.update(ta);
     });
     
-    // take focus off of edit-note-form if clicked outside of form
-    $(document).click(function(event) { 
-        if(!$(event.target).closest('.edit-note-form').length) {
-            if($('.edit-note-form').is(":focus")) {
-                $('.edit-note-form').blur();
-                // $(".edit-note-form").css("display", "none");
-                // $(".edit-note-form").siblings(".card-text").css("dispaly", "show");
+    // $(document).on("click", function(){
+    //     if($(".edit-note-form textarea").is(":focus")) {
+    //         $(".edit-note-form textarea").on("click", function(e){
+    //             // alert("work");
+    //             e.stopPropagation();
+                
+    //         });
+            
+    //         $(document).on("click", function(){
+    //             //   alert("click...");
+    //             console.log("this is where form submits");
+    //             $(".edit-note-form textarea").blur();
+    //             // $(currentForm).submit();
+    //         });
+    //     }
+    // });
+    
+    // EDIT NOTE - PUT
+    $("#note-row").on("submit", ".edit-note-form", function(e){
+        e.preventDefault();
+        
+        var noteItem = $(this).serialize();
+        var actionUrl = $(this).attr("action");
+        var $originalItem = $(this).parent(".card-block");
+        
+        // console.log("inside the PUT for edit-note-form");
+        // debugger
+        
+        $.ajax({
+            url: actionUrl,
+            data: noteItem,
+            type: "PUT",
+            originalItem: $originalItem,
+            success: function(data){
+                this.originalItem.html(
+                `
+                <div class="text-right">
+                    <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                    <textarea name="note[text]">${data.text}</textarea>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+                    </div>
+                </form>
+                <p class="card-text ${data._id}">${data.text}</p>
+                `
+                );
             }
-        }        
+        });
     });
     
     $("#note-row").on("click", ".delete-card-btn", function(){

@@ -149,6 +149,18 @@ app.post("/notes", function(req, res){
     }
 });
 
+// UPDATE ROUTE
+app.put("/notes/:id", function(req, res){
+    Note.findByIdAndUpdate(req.params.id, req.body.note, {new: true}, function(err, note){
+        if(err) {
+            console.log(err);
+        } else {
+            console.log(note);
+            res.json(note);
+        }
+    });
+});
+
 // DELETE ROUTE
 app.delete("/notes/:id", function(req, res){
     Note.findByIdAndRemove(req.params.id, function(err, note){
