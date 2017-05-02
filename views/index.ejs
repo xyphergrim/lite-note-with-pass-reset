@@ -3,13 +3,13 @@
 <% if(!currentUser) { %>
     <div class="container">
         <div class="jumbotron">
-            <h1 class="display-3">LiteNote</h1>
+            <h1 class="display-3">LiteNote <i class="fa fa-sticky-note-o" aria-hidden="true"></i></h1>
             <p class="lead">Welcome to LiteNote, the lightweight note-taking, checklist-marking, and reminder-making web app!</p>
             <hr class="my-4">
-            <p>
-                LiteNote was designed to be as simple, intuitive, and easy to use as possible. We want you to be able to jump in,
-                jot down any notes or to-dos that you need, set a reminder for yourself, and get back out into the world.
-            </p>
+            <ul>
+                Newest features:
+                <li>In-place editing of note cards</li>
+            </ul>
         </div>
     </div>
 <% } else { %>
@@ -27,8 +27,10 @@
                 <div class="card">
                     <div class="card-block">
                         <form id="new-note-form" action="/notes" method="POST">
-                            <textarea placeholder="What's on your mind?" name="note[text]"></textarea>
+                            <div class="note-content" contenteditable="true" data-placeholder="What's on your mind?"></div>
+                            <textarea placeholder="What's on your mind?" name="note[text]" class="hidden-ta"></textarea>
                             <div class="text-right">
+                                <button type="button" class="btn btn-secondary btn-sm checklist-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i></button>
                                 <button type="submit" class="btn btn-secondary btn-sm" id="done-btn">Done</button>
                             </div>
                         </form>
@@ -46,17 +48,21 @@
                                     </button>
                                 </div>
                                 <form class="edit-note-form" action="/notes/<%= note._id %>" method="POST">
-                                    <textarea name="note[text]"><%= note.text %></textarea>
+                                    <div class="note-content" contenteditable="true"><%- note.text %></div>
+                                    <textarea class="hidden-ta" name="note[text]"></textarea>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
                                     </div>
                                 </form>
-                                <p class="card-text <%= note._id %>"><%= note.text %></p>
+                                <!--<p class="card-text <= note._id %>"><= note.text %></p>-->
                             </div>
                         </div>
                     </div>
                 <% } %>
             <% }); %>
+            <!--<div class="enlarged-note">-->
+            <!--    <textarea class="enlarged-textarea"></textarea>-->
+            <!--</div>-->
         </div>
     </div>
 <% } %>

@@ -58,9 +58,38 @@ textarea {
     white-space: pre-wrap;
 }
 
-.edit-note-form {
+/*.edit-note-form {*/
+    /*display: none;*/
+/*}*/
+
+.checklist-btn {
+    background-color: #FFFFA5;
+}
+
+.note-content {
+    margin-bottom: 10px;
+    height: auto;
+    min-height: 75px;
+    outline: none;
+}
+
+.note-content:focus {
+    background-color: rgba(25, 25, 25, .1);
+}
+
+.hidden-ta {
     display: none;
 }
+
+/*.enlarged-note {*/
+/*    display: none;*/
+/*}*/
+
+/*.enlarged-textarea {*/
+/*    height: 500px;*/
+/*    width: 500px;*/
+/*    z-index: 9999;*/
+/*}*/
 
 #login-btn {
     margin-right: 10px;
@@ -76,4 +105,9 @@ textarea {
 
 #update-btn {
     background-color: #FFFFA5;
+}
+
+[contenteditable=true]:empty:before {
+  content: attr(data-placeholder);
+  opacity: .5;
 }

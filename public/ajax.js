@@ -1,6 +1,8 @@
 /* global $ autosize */
 
 $(document).ready(function(){
+    var currentForm;
+    
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
     
     $("#register-btn").on("click", function(){
@@ -32,13 +34,57 @@ $(document).ready(function(){
         autosize.update(ta);
     });
     
+    $(".checklist-btn").on("click", function(){
+        $(".checklist-btn").toggleClass("active");
+        
+        if($(".checklist-btn").hasClass("active")) {
+            // alert("checklist-btn is active now");
+        } else {
+            // alert("checklist-btn is NOT active now");
+        }
+    });
+    
+    // $.get("/notes", function(notes){
+    //     notes.forEach(function(note){
+
+    //             $("user-input").after(
+    //             `
+    //             <div class="col-md-2">
+    //                 <div class="card">
+    //                     <div class="card-block">
+    //                         <div class="text-right">
+    //                             <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
+    //                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
+    //                             </button>
+    //                         </div>
+    //                         <form class="edit-note-form" action="/notes/${note._id}" method="POST">
+    //                             <textarea name="note[text]">${note.text}</textarea>
+    //                             <div class="text-right">
+    //                                 <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+    //                             </div>
+    //                         </form>
+    //                         <p class="card-text ${note._id}">${note.text}</p>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //             `
+    //             );
+
+    //     });
+    // });
+    
     $("#new-note-form").submit(function(e){
       e.preventDefault();
        
-      var noteItem = $(this).serialize();
-      
+    //   var noteItem = $(this).serialize();
+    var userInput = $(".note-content").html();
+    var noteItem = $(this).children(".hidden-ta").val(userInput);
+    // console.log(noteItem);
+    // console.log(this);
+    // debugger;
+    
       $.post("/notes", noteItem, function(data){
-        //   debugger
+        // debugger
         $("#user-input").after(
          `
         <div class="col-md-2">
@@ -50,12 +96,12 @@ $(document).ready(function(){
                         </button>
                     </div>
                     <form class="edit-note-form" action="/notes/${data._id}" method="POST">
-                        <textarea name="note[text]">${data.text}</textarea>
+                        <div class="note-content" contenteditable="true">${data.text}</div>
+                        <textarea name="note[text]" class="hidden-ta"></textarea>
                         <div class="text-right">
                             <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
                         </div>
                     </form>
-                    <p class="card-text ${data._id}">${data.text}</p>
                 </div>
             </div>
         </div>
@@ -64,49 +110,54 @@ $(document).ready(function(){
         
         // console.log($(".delete-card-btn").attr("class"));
         
-        $("#new-note-form").find("textarea").val('');
+        // $("#new-note-form").find("textarea").val('');
+        $(this).children(".note-content").val('');
       });
     });
     
-    $("#note-row").on("click", ".card-text", function(){
-        var currentForm = $(this).siblings(".edit-note-form");
-
-        $(this).css("display", "none");
-        currentForm.toggle();
-        currentForm.children("textarea").focus();
-        
-        var ta = $("textarea");
-        
-        autosize(ta);
-        autosize.update(ta);
+    // assign the currentForm variable so when you click off the form
+    // it will submit any changes you made -- not quite working yet
+    $(".note-content").on("click", function(){
+        currentForm = $(this).parent(".edit-note-form");
     });
     
-    // $(document).on("click", function(){
-    //     if($(".edit-note-form textarea").is(":focus")) {
-    //         $(".edit-note-form textarea").on("click", function(e){
-    //             // alert("work");
-    //             e.stopPropagation();
-                
-    //         });
-            
-    //         $(document).on("click", function(){
-    //             //   alert("click...");
-    //             console.log("this is where form submits");
-    //             $(".edit-note-form textarea").blur();
-    //             // $(currentForm).submit();
-    //         });
-    //     }
+    // $("#note-row").on("click", ".card-text", function(){
+    //     currentForm = $(this).siblings(".edit-note-form");
+    //     $(this).css("display", "none");
+    //     currentForm.toggle();
+    //     currentForm.children("textarea").focus();
+        
+    //     // $(".enlarged-note").css("display", "block");
+    //     // $(".enlarged-textarea").focus();
+        
+    //     var ta = $("textarea");
+        
+    //     autosize(ta);
+    //     autosize.update(ta);
     // });
+    
+    // watch all clicks on the document for submitting notes
+    $(document).click(function(event) { 
+        // console.log("document click");
+        
+        // if(!$(event.target).closest(".note-content").length) {
+        //     if(currentForm) {
+        //         $(currentForm).submit();
+        //     }
+        // }
+    });
     
     // EDIT NOTE - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
         
-        var noteItem = $(this).serialize();
+        var userInput = $(this).children(".note-content").html();
+        var noteItem = $(this).children(".hidden-ta").val(userInput);
+        
+        // var noteItem = $(this).serialize();
         var actionUrl = $(this).attr("action");
         var $originalItem = $(this).parent(".card-block");
         
-        // console.log("inside the PUT for edit-note-form");
         // debugger
         
         $.ajax({
@@ -123,18 +174,19 @@ $(document).ready(function(){
                     </button>
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
-                    <textarea name="note[text]">${data.text}</textarea>
+                    <div class="note-content" contenteditable="true">${data.text}</div>
+                    <textarea class="hidden-ta" name="note[text]"></textarea>
                     <div class="text-right">
                         <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
                     </div>
                 </form>
-                <p class="card-text ${data._id}">${data.text}</p>
                 `
                 );
             }
         });
     });
     
+    // DELETE CARD
     $("#note-row").on("click", ".delete-card-btn", function(){
         // alert("button clicked!");
         
@@ -155,6 +207,12 @@ $(document).ready(function(){
     });
 });
 
+
+
+// OLD CODE
+//=======================================================
+//=======================================================
+//=======================================================
 
 
     // $("#logout-btn").on("click", function(){

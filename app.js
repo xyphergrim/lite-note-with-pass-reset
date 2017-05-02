@@ -12,8 +12,10 @@ var express = require("express"),
     flash = require("connect-flash");
 
 var middlewareObj = {};
-    
-mongoose.connect(process.env.DATABASEURL);
+
+var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
+mongoose.connect(url);
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
 app.use(express.static(__dirname + "/public"));
