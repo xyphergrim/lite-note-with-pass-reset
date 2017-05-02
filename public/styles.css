@@ -78,19 +78,9 @@ textarea {
 }
 
 .update-btn {
-    /*display: none;*/
+    display: none;
     background-color: #FFFFA5;
 }
-
-/*.enlarged-note {*/
-/*    display: none;*/
-/*}*/
-
-/*.enlarged-textarea {*/
-/*    height: 500px;*/
-/*    width: 500px;*/
-/*    z-index: 9999;*/
-/*}*/
 
 #login-btn {
     margin-right: 10px;

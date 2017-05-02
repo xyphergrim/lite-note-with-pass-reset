@@ -49,6 +49,7 @@ $(document).ready(function(){
         } else {
             // alert("checklist-btn is NOT active now");
             // need to remove checklist and clear note card
+            $("#new-note-content").text("");
         }
     });
     
@@ -117,7 +118,7 @@ $(document).ready(function(){
         );
         
         // $("#new-note-form").find("textarea").val('');
-        $(this).children(".note-content").val('');
+        $("#new-note-content").text("");
       });
     });
     
@@ -144,24 +145,20 @@ $(document).ready(function(){
     });
     
     // show the update-btn (done) when clicking on editable note
-    // it works, but only the first time. when you click on the same note card
-    // again it does not show the update-btn, and it only works on initial load;
-    // that is, it doesn't show on newly added notes, but if i make the button visible
-    // all the time without hiding it - it works even on new notes -- ??
-    $(".note-content").on("focus", function(){
+    $("#note-row").on("click", ".note-content", function(){
         $(this).siblings(".text-right").children(".update-btn").show();
     });
     
     // watch all clicks on the document for submitting notes -- not quite working yet
-    $(document).click(function(event) { 
-        // console.log("document click");
-        
-        // if(!$(event.target).closest(".note-content").length) {
-        //     if(currentForm) {
-        //         $(currentForm).submit();
-        //     }
-        // }
-    });
+    // $(document).click(function(event) { 
+    //     // if what was clicked is not the original card block
+    //     if(!$(this).is($('#new-note-content').closest('.card-block'))) {
+    //         if($('#new-note-content').text().length) {
+    //             $('#new-note-form').submit();
+    //             $('#new-note-content').text('');
+    //         }
+    //     }
+    // });
     
     // EDIT NOTE - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
