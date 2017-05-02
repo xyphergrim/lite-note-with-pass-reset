@@ -12,6 +12,10 @@ var noteSchema = new mongoose.Schema({
             ref: "User"
         },
         username: String
+    },
+    isChecked: {
+        type: Boolean,
+        default: false
     }
 });
 

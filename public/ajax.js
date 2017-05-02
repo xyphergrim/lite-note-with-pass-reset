@@ -2,6 +2,7 @@
 
 $(document).ready(function(){
     var currentForm;
+    var isChecklistOn = false;
     
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
     
@@ -35,23 +36,32 @@ $(document).ready(function(){
     //     autosize.update(ta);
     // });
     
+            // <ul>
+            //     <li><input type="checkbox">Feature Under Construction</li>
+            // </ul>
     $(".checklist-btn").on("click", function(){
         $(".checklist-btn").toggleClass("active");
         
         if($(".checklist-btn").hasClass("active")) {
+            isChecklistOn = true;
             $("#new-note-content").append(
             `
-            <ul>
-                <li><input type="checkbox">Feature Under Construction</li>
-            </ul>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="" name="note[checkBox]">
+
+                </label>
+            </div>
             `
             );
         } else {
             // alert("checklist-btn is NOT active now");
             // need to remove checklist and clear note card
             $("#new-note-content").text("");
+            isChecklistOn = false;
         }
     });
+    
     
     // AJAX GET NOTES
     // $.get("/notes", function(notes){
@@ -85,41 +95,50 @@ $(document).ready(function(){
     
     // AJAX SUBMIT NEW NOTE
     $("#new-note-form").submit(function(e){
-      e.preventDefault();
+        e.preventDefault();
        
-    //   var noteItem = $(this).serialize();
-    var userInput = $(".note-content").html();
-    var noteItem = $(this).children(".hidden-ta").val(userInput);
-    // debugger;
+        var isChecked = false;
+       
+        if($(".form-check-input").prop("checked")) {
+           isChecked = true;
+        }
+       
+        // console.log(isChecked);
+        // var noteItem = $(this).serialize();
+        var userInput = $(".note-content").html();
+        var noteItem = $(this).children(".hidden-ta").val(userInput);
+        // debugger;
     
-      $.post("/notes", noteItem, function(data){
-        // debugger
-        $("#user-input").after(
-         `
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-block">
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
-                            <i class="fa fa-trash-o" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <form class="edit-note-form" action="/notes/${data._id}" method="POST">
-                        <div class="note-content" contenteditable="true">${data.text}</div>
-                        <textarea name="note[text]" class="hidden-ta"></textarea>
+        $.post("/notes", noteItem, function(data){
+            // debugger
+            $("#user-input").after(
+             `
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-block">
                         <div class="text-right">
-                            <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+                            <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
                         </div>
-                    </form>
+                        <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <div class="note-content" contenteditable="true">${data.text}</div>
+                            <textarea name="note[text]" class="hidden-ta"></textarea>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-         `
-        );
+             `
+            );
         
-        // $("#new-note-form").find("textarea").val('');
-        $("#new-note-content").text("");
-      });
+            // $("#new-note-form").find("textarea").val('');
+            $("#new-note-content").text("");
+            $(".checklist-btn").removeClass("active");
+            isChecklistOn = false;
+        });
     });
     
     // if using textarea
@@ -159,6 +178,22 @@ $(document).ready(function(){
     //         }
     //     }
     // });
+    
+    $(document).keypress(function(e) {
+        if(e.which == 13 && $("#new-note-content").is(":focus") && isChecklistOn) {
+            e.preventDefault();
+            $("#new-note-content").append(
+            `
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+
+                </label>
+            </div>
+            `
+            );
+        }
+    });
     
     // EDIT NOTE - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
