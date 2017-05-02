@@ -27,7 +27,7 @@
                 <div class="card">
                     <div class="card-block">
                         <form id="new-note-form" action="/notes" method="POST">
-                            <div class="note-content" contenteditable="true" data-placeholder="What's on your mind?"></div>
+                            <div class="note-content" id="new-note-content" contenteditable="true" data-placeholder="What's on your mind?"></div>
                             <textarea placeholder="What's on your mind?" name="note[text]" class="hidden-ta"></textarea>
                             <div class="text-right">
                                 <button type="button" class="btn btn-secondary btn-sm checklist-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i></button>
@@ -51,7 +51,7 @@
                                     <div class="note-content" contenteditable="true"><%- note.text %></div>
                                     <textarea class="hidden-ta" name="note[text]"></textarea>
                                     <div class="text-right">
-                                        <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+                                        <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                                     </div>
                                 </form>
                                 <!--<p class="card-text <= note._id %>"><= note.text %></p>-->

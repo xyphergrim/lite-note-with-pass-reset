@@ -58,10 +58,6 @@ textarea {
     white-space: pre-wrap;
 }
 
-/*.edit-note-form {*/
-    /*display: none;*/
-/*}*/
-
 .checklist-btn {
     background-color: #FFFFA5;
 }
@@ -79,6 +75,11 @@ textarea {
 
 .hidden-ta {
     display: none;
+}
+
+.update-btn {
+    /*display: none;*/
+    background-color: #FFFFA5;
 }
 
 /*.enlarged-note {*/
@@ -103,9 +104,9 @@ textarea {
     background-color: #FFFFA5;
 }
 
-#update-btn {
-    background-color: #FFFFA5;
-}
+/*#update-btn {*/
+/*    background-color: #FFFFA5;*/
+/*}*/
 
 [contenteditable=true]:empty:before {
   content: attr(data-placeholder);

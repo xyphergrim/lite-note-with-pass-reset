@@ -25,25 +25,34 @@ $(document).ready(function(){
         $("#new-user-form").find(".form-control").val('');
     });
     
-    $("textarea").on("focus", function(){
-        // console.log("inside textarea");
+    // if using textarea
+    // $("textarea").on("focus", function(){
+    //     // console.log("inside textarea");
         
-        var ta = $("textarea");
+    //     var ta = $("textarea");
         
-        autosize(ta);
-        autosize.update(ta);
-    });
+    //     autosize(ta);
+    //     autosize.update(ta);
+    // });
     
     $(".checklist-btn").on("click", function(){
         $(".checklist-btn").toggleClass("active");
         
         if($(".checklist-btn").hasClass("active")) {
-            // alert("checklist-btn is active now");
+            $("#new-note-content").append(
+            `
+            <ul>
+                <li><input type="checkbox">Feature Under Construction</li>
+            </ul>
+            `
+            );
         } else {
             // alert("checklist-btn is NOT active now");
+            // need to remove checklist and clear note card
         }
     });
     
+    // AJAX GET NOTES
     // $.get("/notes", function(notes){
     //     notes.forEach(function(note){
 
@@ -73,14 +82,13 @@ $(document).ready(function(){
     //     });
     // });
     
+    // AJAX SUBMIT NEW NOTE
     $("#new-note-form").submit(function(e){
       e.preventDefault();
        
     //   var noteItem = $(this).serialize();
     var userInput = $(".note-content").html();
     var noteItem = $(this).children(".hidden-ta").val(userInput);
-    // console.log(noteItem);
-    // console.log(this);
     // debugger;
     
       $.post("/notes", noteItem, function(data){
@@ -99,7 +107,7 @@ $(document).ready(function(){
                         <div class="note-content" contenteditable="true">${data.text}</div>
                         <textarea name="note[text]" class="hidden-ta"></textarea>
                         <div class="text-right">
-                            <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+                            <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                         </div>
                     </form>
                 </div>
@@ -108,19 +116,12 @@ $(document).ready(function(){
          `
         );
         
-        // console.log($(".delete-card-btn").attr("class"));
-        
         // $("#new-note-form").find("textarea").val('');
         $(this).children(".note-content").val('');
       });
     });
     
-    // assign the currentForm variable so when you click off the form
-    // it will submit any changes you made -- not quite working yet
-    $(".note-content").on("click", function(){
-        currentForm = $(this).parent(".edit-note-form");
-    });
-    
+    // if using textarea
     // $("#note-row").on("click", ".card-text", function(){
     //     currentForm = $(this).siblings(".edit-note-form");
     //     $(this).css("display", "none");
@@ -136,7 +137,22 @@ $(document).ready(function(){
     //     autosize.update(ta);
     // });
     
-    // watch all clicks on the document for submitting notes
+    // assign the currentForm variable so when you click off the form
+    // it will submit any changes you made
+    $(".note-content").on("click", function(){
+        currentForm = $(this).parent(".edit-note-form");
+    });
+    
+    // show the update-btn (done) when clicking on editable note
+    // it works, but only the first time. when you click on the same note card
+    // again it does not show the update-btn, and it only works on initial load;
+    // that is, it doesn't show on newly added notes, but if i make the button visible
+    // all the time without hiding it - it works even on new notes -- ??
+    $(".note-content").on("focus", function(){
+        $(this).siblings(".text-right").children(".update-btn").show();
+    });
+    
+    // watch all clicks on the document for submitting notes -- not quite working yet
     $(document).click(function(event) { 
         // console.log("document click");
         
@@ -177,7 +193,7 @@ $(document).ready(function(){
                     <div class="note-content" contenteditable="true">${data.text}</div>
                     <textarea class="hidden-ta" name="note[text]"></textarea>
                     <div class="text-right">
-                        <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+                        <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                     </div>
                 </form>
                 `
