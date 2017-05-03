@@ -1,7 +1,6 @@
-/* global $ autosize */
+/* global $ */
 
 $(document).ready(function(){
-    var currentForm;
     var isChecklistOn = false;
     
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
@@ -26,19 +25,12 @@ $(document).ready(function(){
         $("#new-user-form").find(".form-control").val('');
     });
     
-    // if using textarea
-    // $("textarea").on("focus", function(){
-    //     // console.log("inside textarea");
-        
-    //     var ta = $("textarea");
-        
-    //     autosize(ta);
-    //     autosize.update(ta);
-    // });
+    // show the update-btn (done) when clicking on editable card
+    $("#note-row").on("click", ".note-content", function(){
+        $(this).siblings(".text-right").children(".update-btn").show();
+    });
     
-            // <ul>
-            //     <li><input type="checkbox">Feature Under Construction</li>
-            // </ul>
+    // toggle a checklist feature on note card
     $(".checklist-btn").on("click", function(){
         $(".checklist-btn").toggleClass("active");
         
@@ -62,8 +54,38 @@ $(document).ready(function(){
         }
     });
     
+    $(document).keypress(function(e) {
+        // if Enter key is pressed while the new-note-content has focus, and 
+        // isChecklistOn = true, then append the following content to the new-note-content
+        if(e.which == 13 && $("#new-note-content").is(":focus") && isChecklistOn) {
+            // e.preventDefault();
+
+            $("#new-note-content").append(
+            `
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+
+                </label>
+            </div>
+            `
+            );
+        }
+    });
     
-    // AJAX GET NOTES
+    // watch all clicks on the document for submitting notes
+    // $(document).click(function(event) { 
+    //     if what was clicked is not the original card block
+    //     if(!$(this).is($('#new-note-content').closest('.card-block'))) {
+    //         if($('#new-note-content').text().length) {
+    //             $('#new-note-form').submit();
+    //             $('#new-note-content').text('');
+    //         }
+    //     }
+    // });
+    
+    //=====================================================
+    // GET CARDS
     // $.get("/notes", function(notes){
     //     notes.forEach(function(note){
 
@@ -92,8 +114,9 @@ $(document).ready(function(){
 
     //     });
     // });
+    //=====================================================
     
-    // AJAX SUBMIT NEW NOTE
+    // SUBMIT NEW CARD
     $("#new-note-form").submit(function(e){
         e.preventDefault();
        
@@ -141,64 +164,7 @@ $(document).ready(function(){
         });
     });
     
-    // if using textarea
-    // $("#note-row").on("click", ".card-text", function(){
-    //     currentForm = $(this).siblings(".edit-note-form");
-    //     $(this).css("display", "none");
-    //     currentForm.toggle();
-    //     currentForm.children("textarea").focus();
-        
-    //     // $(".enlarged-note").css("display", "block");
-    //     // $(".enlarged-textarea").focus();
-        
-    //     var ta = $("textarea");
-        
-    //     autosize(ta);
-    //     autosize.update(ta);
-    // });
-    
-    // assign the currentForm variable so when you click off the form
-    // it will submit any changes you made
-    $(".note-content").on("click", function(){
-        currentForm = $(this).parent(".edit-note-form");
-    });
-    
-    // show the update-btn (done) when clicking on editable note
-    $("#note-row").on("click", ".note-content", function(){
-        $(this).siblings(".text-right").children(".update-btn").show();
-    });
-    
-    // watch all clicks on the document for submitting notes -- not quite working yet
-    // $(document).click(function(event) { 
-    //     // if what was clicked is not the original card block
-    //     if(!$(this).is($('#new-note-content').closest('.card-block'))) {
-    //         if($('#new-note-content').text().length) {
-    //             $('#new-note-form').submit();
-    //             $('#new-note-content').text('');
-    //         }
-    //     }
-    // });
-    
-    $(document).keypress(function(e) {
-        // if Enter key is pressed while the new-note-content has focus, and 
-        // isChecklistOn = true, then append the following content to the new-note-content
-        if(e.which == 13 && $("#new-note-content").is(":focus") && isChecklistOn) {
-            // e.preventDefault();
-
-            $("#new-note-content").append(
-            `
-            <div class="form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" value="">
-
-                </label>
-            </div>
-            `
-            );
-        }
-    });
-    
-    // EDIT NOTE - PUT
+    // EDIT CARD - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
         
@@ -260,11 +226,37 @@ $(document).ready(function(){
 
 
 
+
 // OLD CODE
 //=======================================================
 //=======================================================
 //=======================================================
 
+    // if using textarea
+    // $("textarea").on("focus", function(){
+    //     // console.log("inside textarea");
+        
+    //     var ta = $("textarea");
+        
+    //     autosize(ta);
+    //     autosize.update(ta);
+    // });
+
+    // if using textarea
+    // $("#note-row").on("click", ".card-text", function(){
+    //     currentForm = $(this).siblings(".edit-note-form");
+    //     $(this).css("display", "none");
+    //     currentForm.toggle();
+    //     currentForm.children("textarea").focus();
+        
+    //     // $(".enlarged-note").css("display", "block");
+    //     // $(".enlarged-textarea").focus();
+        
+    //     var ta = $("textarea");
+        
+    //     autosize(ta);
+    //     autosize.update(ta);
+    // });
 
     // $("#logout-btn").on("click", function(){
     //     $.get("/logout", function(data){});

@@ -133,14 +133,14 @@ app.post("/notes", function(req, res){
         id: req.user._id,
         username: req.user.username
     };
-    var isChecked = req.body.note.checkBox;
+    // var isChecked = req.body.note.checkBox;
     
     console.log(formData);
-    console.log(isChecked);
+    // console.log(isChecked);
     
     if(formData !== undefined) {
         if(formData.trim() !== "") {
-            var newNote = {text: formData, author: author, isChecked: isChecked};
+            var newNote = {text: formData, author: author};
         
             Note.create(newNote, function(err, newlyCreated){
                 if(err) {

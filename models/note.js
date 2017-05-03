@@ -12,11 +12,11 @@ var noteSchema = new mongoose.Schema({
             ref: "User"
         },
         username: String
-    },
-    isChecked: {
-        type: Boolean,
-        default: false
     }
+    // isChecked: {
+    //     type: Boolean,
+    //     default: false
+    // }
 });
 
 module.exports = mongoose.model("Note", noteSchema);
