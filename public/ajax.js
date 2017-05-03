@@ -180,8 +180,11 @@ $(document).ready(function(){
     // });
     
     $(document).keypress(function(e) {
+        // if Enter key is pressed while the new-note-content has focus, and 
+        // isChecklistOn = true, then append the following content to the new-note-content
         if(e.which == 13 && $("#new-note-content").is(":focus") && isChecklistOn) {
-            e.preventDefault();
+            // e.preventDefault();
+
             $("#new-note-content").append(
             `
             <div class="form-check">

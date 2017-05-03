@@ -82,6 +82,10 @@ textarea {
     background-color: #FFFFA5;
 }
 
+.jumbotron-ul {
+    display: inline-block;
+}
+
 #login-btn {
     margin-right: 10px;
 }
@@ -94,6 +98,10 @@ textarea {
     background-color: #FFFFA5;
 }
 
+#upcoming-features {
+    float: right;
+}
+
 /*#update-btn {*/
 /*    background-color: #FFFFA5;*/
 /*}*/
@@ -101,4 +109,14 @@ textarea {
 [contenteditable=true]:empty:before {
   content: attr(data-placeholder);
   opacity: .5;
+}
+
+@media (max-width: 991px) {
+    .jumbotron {
+        height: 475px;
+    }
+    
+    #upcoming-features {
+        float: none;
+    }
 }
