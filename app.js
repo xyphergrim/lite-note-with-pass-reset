@@ -13,6 +13,7 @@ var express = require("express"),
 
 var middlewareObj = {};
 
+var port = process.env.PORT || 3000;
 var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
 mongoose.connect(url);
 
@@ -64,7 +65,7 @@ app.get("/notes", function(req, res){
 });
 
 // LOGIN ROUTE
-app.post("/login", passport.authenticate("local", 
+app.post("/login", passport.authenticate("local",
     {
         successRedirect: "/notes",
         failureRedirect: "/notes",
@@ -88,7 +89,7 @@ app.post("/login", passport.authenticate("local",
 // REGISTER ROUTE
 app.post("/register", function(req, res){
     var newUser = new User({username: req.body.username, profileName: req.body.profileName});
-    
+
     User.register(newUser, req.body.password, function(err, user){
         if(err) {
             req.flash("error", "Email has already been registered");
@@ -105,7 +106,7 @@ app.post("/register", function(req, res){
 // FOR AJAX REGISTER
 // app.post("/register", function(req, res){
 //     var newUser = new User({username: req.body.username, profileName: req.body.profileName});
-    
+
 //     User.register(newUser, req.body.password, function(err, user){
 //         if(err) {
 //             res.status(500).json({message: "Server error!", error: err});
@@ -127,21 +128,29 @@ app.get("/logout", function(req, res){
 
 // POST ROUTE
 app.post("/notes", function(req, res){
-    req.body.note.text = req.sanitize(req.body.note.text);
-    var formData = req.body.note.text;
+    var formData;
+
+    if(req.body.note.text !== undefined) {
+      req.body.note.text = req.sanitize(req.body.note.text);
+      formData = req.body.note.text;
+    } else {
+      req.body.ckbox.text = req.sanitize(req.body.ckbox.text);
+      formData = req.body.ckbox.text;
+    }
+
     var author = {
         id: req.user._id,
         username: req.user.username
     };
     // var isChecked = req.body.note.checkBox;
-    
+
     console.log(formData);
     // console.log(isChecked);
-    
+
     if(formData !== undefined) {
         if(formData.trim() !== "") {
             var newNote = {text: formData, author: author};
-        
+
             Note.create(newNote, function(err, newlyCreated){
                 if(err) {
                     console.log(err);
@@ -176,6 +185,6 @@ app.delete("/notes/:id", function(req, res){
     });
 });
 
-app.listen(process.env.PORT, process.env.IP, function(){
+app.listen(port, process.env.IP, function(){
     console.log("LiteNote Server Started");
 });

@@ -8,11 +8,11 @@ textarea {
     border: none;
     overflow: auto;
     outline: none;
-    
+
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    
+
     background-color: #FFFFA5;
 }
 
@@ -73,10 +73,6 @@ textarea {
     background-color: rgba(25, 25, 25, .1);
 }
 
-.hidden-ta {
-    display: none;
-}
-
 .update-btn {
     display: none;
     background-color: #FFFFA5;
@@ -84,6 +80,18 @@ textarea {
 
 .jumbotron-ul {
     display: inline-block;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.note-text-input {
+  background-color: #FFFFA5;
+}
+
+.note-text-input:focus {
+  background-color: #FFFFA5;
 }
 
 #login-btn {
@@ -115,7 +123,7 @@ textarea {
     .jumbotron {
         height: 475px;
     }
-    
+
     #upcoming-features {
         float: none;
     }

@@ -24,7 +24,7 @@
     <!--        <input type="text" class="form-control" placeholder="What's on your mind?" name="note[text]"></input>-->
     <!--    </div>-->
     <!--</form>-->
-    
+
     <!-- content -->
     <a name="toTop">
     <div class="container-fluid">
@@ -33,9 +33,9 @@
                 <div class="card">
                     <div class="card-block">
                         <form id="new-note-form" action="/notes" method="POST">
-                            <div class="note-content" id="new-note-content" contenteditable="true" data-placeholder="What's on your mind?"></div>
-                            <textarea placeholder="What's on your mind?" name="note[text]" class="hidden-ta"></textarea>
-                            <div class="text-right">
+                            <!-- <div class="note-content" id="new-note-content" contenteditable="true" data-placeholder="What's on your mind?"></div> -->
+                            <textarea id="new-note-content" placeholder="What's on your mind?" name="note[text]"></textarea>
+                            <div class="text-right new-note-btns">
                                 <button type="button" class="btn btn-secondary btn-sm checklist-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i></button>
                                 <button type="submit" class="btn btn-secondary btn-sm" id="done-btn">Done</button>
                             </div>
@@ -54,8 +54,8 @@
                                     </button>
                                 </div>
                                 <form class="edit-note-form" action="/notes/<%= note._id %>" method="POST">
-                                    <div class="note-content" contenteditable="true"><%- note.text %></div>
-                                    <textarea class="hidden-ta" name="note[text]"></textarea>
+                                    <!-- <div class="note-content" contenteditable="true"><- note.text %></div> -->
+                                    <textarea class="note-content" name="note[text]"><%= note.text %></textarea>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                                     </div>
