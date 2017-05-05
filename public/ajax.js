@@ -40,23 +40,28 @@ $(document).ready(function(){
 
         if($(".checklist-btn").hasClass("active")) {
             isChecklistOn = true;
-            $("#new-note-content").hide();
+
+            $(".new-note-content").remove();
 
             $("#new-note-form").prepend(
             `
-            <div class="input-group">
-              <span class="input-group-addon">
-                <input type="checkbox" aria-label="Checkbox for following text input">
-              </span>
-              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="ckbox[text]">
+            <div class="checkbox-txt">
+              <i class="fa fa-check-square-o" aria-hidden="true"></i><input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
             </div>
             `
             );
+
+
         } else {
             // alert("checklist-btn is NOT active now");
             // need to remove checklist and clear note card
-            $(".input-group").hide();
-            $("#new-note-content").show();
+            $("#new-note-form").prepend(
+              `
+              <textarea class="new-note-content" placeholder="What's on your mind?" name="note[text]"></textarea>
+              `
+            );
+
+            $(".checkbox-txt").remove();
             isChecklistOn = false;
         }
     });
@@ -79,11 +84,8 @@ $(document).ready(function(){
 
           $(".new-note-btns").before(
             `
-            <div class="input-group">
-              <span class="input-group-addon">
-                <input type="checkbox" aria-label="Checkbox for following text input">
-              </span>
-              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="ckbox[text]">
+            <div class="checkbox-txt">
+              <i class="fa fa-check-square-o" aria-hidden="true"></i><input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
             </div>
             `
           );
@@ -151,10 +153,7 @@ $(document).ready(function(){
 
         if(isChecklistOn) {
           var noteItem = $(this).serialize();
-          // console.log(this);
           console.log(noteItem);
-          var userInput = $("#new-note-form").html();
-          console.log(userInput);
 
           $.post("/notes", noteItem, function(data){
             $("#user-input").after(
@@ -167,18 +166,27 @@ $(document).ready(function(){
                                   <i class="fa fa-trash-o" aria-hidden="true"></i>
                               </button>
                           </div>
-                          <form class="edit-note-form" action="/notes/${data._id}" method="POST">
-                              ***** I WANT THE INPUT-GROUP CHECKBOX AND TEXT INPUT HERE *****
+                          <form id="unique-edit-form" class="edit-note-form" action="/notes/${data._id}" method="POST">
+
                           </form>
                       </div>
                   </div>
               </div>
               `
             );
+
+            data.checklists.forEach(function(checklistItem){
+              $("#unique-edit-form").prepend(
+                `
+                <div><input type="checkbox">${checklistItem}</div>
+                `
+              );
+            });
           });
         } else {
           var noteItem = $(this).serialize();
-          // <div class="note-content" contenteditable="true">${data.text}</div>
+          console.log(noteItem);
+
           $.post("/notes", noteItem, function(data){
               // debugger
               $("#user-input").after(
@@ -207,7 +215,7 @@ $(document).ready(function(){
               autosize($(".note-content"));
 
               // $("#new-note-form").find("textarea").val('');
-              $("#new-note-content").val("");
+              $(".new-note-content").val("");
               $(".checklist-btn").removeClass("active");
               isChecklistOn = false;
           });

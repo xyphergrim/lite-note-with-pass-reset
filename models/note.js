@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 
 var noteSchema = new mongoose.Schema({
     text: String,
+    checklists: Array,
     createdAt: {
         type: Date,
         default: Date.now
@@ -13,10 +14,6 @@ var noteSchema = new mongoose.Schema({
         },
         username: String
     }
-    // isChecked: {
-    //     type: Boolean,
-    //     default: false
-    // }
 });
 
 module.exports = mongoose.model("Note", noteSchema);

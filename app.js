@@ -128,38 +128,30 @@ app.get("/logout", function(req, res){
 
 // POST ROUTE
 app.post("/notes", function(req, res){
-    var formData;
-
-    if(req.body.note.text !== undefined) {
-      req.body.note.text = req.sanitize(req.body.note.text);
-      formData = req.body.note.text;
-    } else {
-      req.body.ckbox.text = req.sanitize(req.body.ckbox.text);
-      formData = req.body.ckbox.text;
-    }
-
     var author = {
-        id: req.user._id,
-        username: req.user.username
+      id: req.user._id,
+      username: req.user.username
     };
-    // var isChecked = req.body.note.checkBox;
+    var formData;
+    formData = req.body;
+    formData.text = req.body.note.text;
+    formData.checklists = req.body.checklists;
+    formData.author = author;
 
     console.log(formData);
-    // console.log(isChecked);
+    console.log(formData.checklists);
 
-    if(formData !== undefined) {
-        if(formData.trim() !== "") {
-            var newNote = {text: formData, author: author};
-
-            Note.create(newNote, function(err, newlyCreated){
+    // if(formData !== undefined) {
+    //     if(formData.trim() !== "") {
+            Note.create(formData, function(err, newlyCreated){
                 if(err) {
                     console.log(err);
                 } else {
                     res.json(newlyCreated);
                 }
             });
-        }
-    }
+    //     }
+    // }
 });
 
 // UPDATE ROUTE

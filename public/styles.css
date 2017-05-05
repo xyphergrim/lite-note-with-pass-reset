@@ -94,6 +94,10 @@ textarea {
   background-color: #FFFFA5;
 }
 
+/*.fake-input {
+  display: none;
+}*/
+
 #login-btn {
     margin-right: 10px;
 }
