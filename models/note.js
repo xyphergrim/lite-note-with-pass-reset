@@ -3,6 +3,10 @@ var mongoose = require("mongoose");
 var noteSchema = new mongoose.Schema({
     text: String,
     checklists: Array,
+    // isChecked: {
+    //     type: Boolean,
+    //     default: false
+    // },
     createdAt: {
         type: Date,
         default: Date.now

@@ -132,14 +132,20 @@ app.post("/notes", function(req, res){
       id: req.user._id,
       username: req.user.username
     };
-    var formData;
-    formData = req.body;
-    formData.text = req.body.note.text;
-    formData.checklists = req.body.checklists;
+    var formData = req.body;
+    // var formData = {};
+    // req.body.note ? formData.text = req.body.note.text : formData.checklists = req.body.checklists;
     formData.author = author;
-
+    
+    // if(formData.checklists) {
+    //     for(var i = 0; i < formData.checklists.length; i++) {
+    //         if(formData.checklists[i] === "") {
+    //             formData.checklists.splice(i, 1);
+    //         }
+    //     }
+    // }
+    
     console.log(formData);
-    console.log(formData.checklists);
 
     // if(formData !== undefined) {
     //     if(formData.trim() !== "") {

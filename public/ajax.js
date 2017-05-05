@@ -1,11 +1,10 @@
-/* global $ */
+/* global $ autosize */
 
 $(document).ready(function(){
     var isChecklistOn = false;
     var ta = $("textarea");
 
     autosize(ta);
-    autosize.update(ta);
 
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
 
@@ -46,7 +45,7 @@ $(document).ready(function(){
             $("#new-note-form").prepend(
             `
             <div class="checkbox-txt">
-              <i class="fa fa-check-square-o" aria-hidden="true"></i><input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
+              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
             </div>
             `
             );
@@ -57,7 +56,7 @@ $(document).ready(function(){
             // need to remove checklist and clear note card
             $("#new-note-form").prepend(
               `
-              <textarea class="new-note-content" placeholder="What's on your mind?" name="note[text]"></textarea>
+              <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
               `
             );
 
@@ -65,16 +64,29 @@ $(document).ready(function(){
             isChecklistOn = false;
         }
     });
-
-    $("#note-row").on("click", "textarea", function(){
-        // currentForm = $(this).siblings(".edit-note-form");
-        // $(this).css("display", "none");
-        // currentForm.toggle();
-        // currentForm.children("textarea").focus();
-
-        autosize(ta);
-        autosize.update(ta);
+    
+    // if($(".ckbox").is(":checked")) {
+    //     $(".ckbox-div").css("text-decoration", "line-through");
+    // }
+    
+    $("#note-row").on("change", ".ckbox", function(){
+        console.log(this);
+        if($(this).is(":checked")) {
+            console.log(this);
+            $(this).closest(".ckbox-div").css("text-decoration", "line-through");
+            $(this).parent(".ckbox-div").siblings(".text-right").children(".update-btn").show();
+        }
     });
+
+    // $("#note-row").on("click", "textarea", function(){
+    //     // currentForm = $(this).siblings(".edit-note-form");
+    //     // $(this).css("display", "none");
+    //     // currentForm.toggle();
+    //     // currentForm.children("textarea").focus();
+
+    //     autosize(ta);
+    //     autosize.update(ta);
+    // });
 
     $(document).keypress(function(e) {
         // if Enter key is pressed while the note-text-input has focus, and
@@ -82,11 +94,9 @@ $(document).ready(function(){
         if(e.which == 13 && $(".note-text-input").is(":focus") && isChecklistOn) {
           e.preventDefault();
 
-          $(".new-note-btns").before(
+          $(".checkbox-txt").append(
             `
-            <div class="checkbox-txt">
-              <i class="fa fa-check-square-o" aria-hidden="true"></i><input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
-            </div>
+            <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
             `
           );
 
@@ -153,7 +163,7 @@ $(document).ready(function(){
 
         if(isChecklistOn) {
           var noteItem = $(this).serialize();
-          console.log(noteItem);
+        //   console.log(noteItem);
 
           $.post("/notes", noteItem, function(data){
             $("#user-input").after(
@@ -167,7 +177,10 @@ $(document).ready(function(){
                               </button>
                           </div>
                           <form id="unique-edit-form" class="edit-note-form" action="/notes/${data._id}" method="POST">
-
+                            <div class="hidden-div"></div>
+                            <div class="text-right">
+                               <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+                            </div>
                           </form>
                       </div>
                   </div>
@@ -176,16 +189,26 @@ $(document).ready(function(){
             );
 
             data.checklists.forEach(function(checklistItem){
-              $("#unique-edit-form").prepend(
+              $(".hidden-div").append(
                 `
-                <div><input type="checkbox">${checklistItem}</div>
+                <div class="ckbox-div"><input type="checkbox" class="ckbox"> ${checklistItem}</div>
                 `
               );
             });
+            
+            $(".checklist-btn").removeClass("active");
+            $(".checkbox-txt").remove();
+            isChecklistOn = false;
+            
+            $("#new-note-form").prepend(
+              `
+              <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
+              `
+            );
           });
         } else {
           var noteItem = $(this).serialize();
-          console.log(noteItem);
+        //   console.log(noteItem);
 
           $.post("/notes", noteItem, function(data){
               // debugger
@@ -200,8 +223,7 @@ $(document).ready(function(){
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
-
-                              <textarea class="note-content" name="note[text]">${data.text}</textarea>
+                              <textarea class="note-content" name="text">${data.text}</textarea>
                               <div class="text-right">
                                   <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                               </div>
@@ -212,23 +234,15 @@ $(document).ready(function(){
                `
               );
 
-              autosize($(".note-content"));
-
-              // $("#new-note-form").find("textarea").val('');
-              $(".new-note-content").val("");
-              $(".checklist-btn").removeClass("active");
-              isChecklistOn = false;
+            autosize($(".note-content"));
+            $(".new-note-content").val("");
           });
         }
     });
 
-    // <div class="note-content" contenteditable="true">${data.text}</div>
     // EDIT CARD - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
-
-        // var userInput = $(this).children(".note-content").html();
-        // var noteItem = $(this).children(".hidden-ta").val(userInput);
 
         var noteItem = $(this).serialize();
         var actionUrl = $(this).attr("action");
@@ -251,16 +265,16 @@ $(document).ready(function(){
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
 
-                    <textarea class="note-content" name="note[text]">${data.text}</textarea>
+                    <textarea class="note-content" name="text">${data.text}</textarea>
                     <div class="text-right">
                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                     </div>
                 </form>
                 `
                 );
+                autosize($(".note-content"));
             }
         });
-        // autosize($(".note-content"));
     });
 
     // DELETE CARD

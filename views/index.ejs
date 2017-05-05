@@ -53,10 +53,13 @@
                                     </button>
                                 </div>
                                 <form class="edit-note-form" action="/notes/<%= note._id %>" method="POST">
-                                    <textarea class="note-content" name="note[text]"><%= note.text %></textarea>
-                                    <% note.checklists.forEach(function(checklistItem) { %>
-                                        <div><input type="checkbox" name="checkboxes[]"><%= checklistItem %></div>
-                                    <% }); %>
+                                    <% if(note.text !== null && note.text !== undefined) { %>
+                                        <textarea class="note-content" name="text"><%= note.text %></textarea>
+                                    <% } else { %>
+                                        <% note.checklists.forEach(function(checklistItem) { %>
+                                            <div class="ckbox-div"><input type="checkbox" name="checkboxes[]" class="ckbox"> <%= checklistItem %></div>
+                                        <% }); %>
+                                    <% } %>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                                     </div>

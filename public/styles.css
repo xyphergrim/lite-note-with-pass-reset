@@ -76,6 +76,7 @@ textarea {
 .update-btn {
     display: none;
     background-color: #FFFFA5;
+    margin-top: 10px;
 }
 
 .jumbotron-ul {
@@ -88,15 +89,12 @@ textarea {
 
 .note-text-input {
   background-color: #FFFFA5;
+  margin-bottom: 10px;
 }
 
 .note-text-input:focus {
   background-color: #FFFFA5;
 }
-
-/*.fake-input {
-  display: none;
-}*/
 
 #login-btn {
     margin-right: 10px;
