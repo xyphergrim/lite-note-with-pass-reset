@@ -133,36 +133,41 @@ app.post("/notes", function(req, res){
       username: req.user.username
     };
     var formData = req.body;
+    formData.author = author;
+    // formData.isChecklist = req.isChecklist;
+
     // var formData = {};
     // req.body.note ? formData.text = req.body.note.text : formData.checklists = req.body.checklists;
-    formData.author = author;
-    
-    // if(formData.checklists) {
-    //     for(var i = 0; i < formData.checklists.length; i++) {
-    //         if(formData.checklists[i] === "") {
-    //             formData.checklists.splice(i, 1);
-    //         }
-    //     }
-    // }
-    
+
+    if(formData.checklists) {
+      console.log(formData.checklists.length);
+        for(var i = 0; i < formData.checklists.length; i++) {
+            if(formData.checklists[i] === "") {
+                formData.checklists.splice(i, 1);
+            }
+        }
+    }
+
     console.log(formData);
+
+    Note.create(formData, function(err, newlyCreated){
+        if(err) {
+            console.log(err);
+        } else {
+            res.json(newlyCreated);
+        }
+    });
 
     // if(formData !== undefined) {
     //     if(formData.trim() !== "") {
-            Note.create(formData, function(err, newlyCreated){
-                if(err) {
-                    console.log(err);
-                } else {
-                    res.json(newlyCreated);
-                }
-            });
+
     //     }
     // }
 });
 
 // UPDATE ROUTE
 app.put("/notes/:id", function(req, res){
-    Note.findByIdAndUpdate(req.params.id, req.body.note, {new: true}, function(err, note){
+    Note.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, note){
         if(err) {
             console.log(err);
         } else {

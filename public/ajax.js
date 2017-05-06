@@ -2,6 +2,7 @@
 
 $(document).ready(function(){
     var isChecklistOn = false;
+    var isChecklist = false;
     var ta = $("textarea");
 
     autosize(ta);
@@ -39,13 +40,16 @@ $(document).ready(function(){
 
         if($(".checklist-btn").hasClass("active")) {
             isChecklistOn = true;
+            isChecklist = true;
+
+            $("#done-btn").attr("value", "true");
 
             $(".new-note-content").remove();
 
             $("#new-note-form").prepend(
             `
             <div class="checkbox-txt">
-              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
+              <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
             </div>
             `
             );
@@ -62,55 +66,44 @@ $(document).ready(function(){
 
             $(".checkbox-txt").remove();
             isChecklistOn = false;
+            isChecklist = false;
         }
     });
-    
+
     // if($(".ckbox").is(":checked")) {
     //     $(".ckbox-div").css("text-decoration", "line-through");
     // }
-    
+
+    // when todo is checked then strike through and other styling
     $("#note-row").on("change", ".ckbox", function(){
         console.log(this);
         if($(this).is(":checked")) {
             console.log(this);
             $(this).closest(".ckbox-div").css("text-decoration", "line-through");
             $(this).parent(".ckbox-div").siblings(".text-right").children(".update-btn").show();
+            $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+        } else if(!($(this).is(":checked"))) {
+            $(this).closest(".ckbox-div").css("text-decoration", "none");
         }
     });
 
-    // $("#note-row").on("click", "textarea", function(){
-    //     // currentForm = $(this).siblings(".edit-note-form");
-    //     // $(this).css("display", "none");
-    //     // currentForm.toggle();
-    //     // currentForm.children("textarea").focus();
-
-    //     autosize(ta);
-    //     autosize.update(ta);
-    // });
+    $("#note-row").on("click", ".note-text-input", function(){
+      $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+    });
 
     $(document).keypress(function(e) {
         // if Enter key is pressed while the note-text-input has focus, and
-        // isChecklistOn = true, then append the following content to the new-note-content
-        if(e.which == 13 && $(".note-text-input").is(":focus") && isChecklistOn) {
+        // isChecklistOn = true, then append the following content to the checkbox-txt
+        if(e.which == 13 && $(".new-note-text").is(":focus") && isChecklistOn) {
           e.preventDefault();
 
           $(".checkbox-txt").append(
             `
-            <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]">
+            <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
             `
           );
 
-          $(".note-text-input").focus();
-            // $("#new-note-content").append(
-            // `
-            // <div class="form-check">
-            //     <label class="form-check-label">
-            //         <input class="form-check-input" type="checkbox" value="">
-            //
-            //     </label>
-            // </div>
-            // `
-            // );
+          $(".new-note-text").focus();
         }
     });
 
@@ -176,8 +169,8 @@ $(document).ready(function(){
                                   <i class="fa fa-trash-o" aria-hidden="true"></i>
                               </button>
                           </div>
-                          <form id="unique-edit-form" class="edit-note-form" action="/notes/${data._id}" method="POST">
-                            <div class="hidden-div"></div>
+                          <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <div class="hidden-div-${data._id}"></div>
                             <div class="text-right">
                                <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                             </div>
@@ -188,18 +181,28 @@ $(document).ready(function(){
               `
             );
 
+            // no boostrap style
+            // <div class="ckbox-div">
+            //   <input type="checkbox" class="ckbox">
+            //   <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
+            // </div>
             data.checklists.forEach(function(checklistItem){
-              $(".hidden-div").append(
+              $(".hidden-div-"+data._id).append(
                 `
-                <div class="ckbox-div"><input type="checkbox" class="ckbox"> ${checklistItem}</div>
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <input type="checkbox" class="ckbox" aria-label="Checkbox for following text input">
+                  </span>
+                  <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
+                </div>
                 `
               );
             });
-            
+
             $(".checklist-btn").removeClass("active");
             $(".checkbox-txt").remove();
             isChecklistOn = false;
-            
+
             $("#new-note-form").prepend(
               `
               <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
@@ -248,7 +251,9 @@ $(document).ready(function(){
         var actionUrl = $(this).attr("action");
         var $originalItem = $(this).parent(".card-block");
 
+        // console.log(noteItem);
         // debugger
+        console.log($originalItem);
 
         $.ajax({
             url: actionUrl,
@@ -256,6 +261,7 @@ $(document).ready(function(){
             type: "PUT",
             originalItem: $originalItem,
             success: function(data){
+              if(data.text === undefined) {
                 this.originalItem.html(
                 `
                 <div class="text-right">
@@ -264,7 +270,35 @@ $(document).ready(function(){
                     </button>
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                  <div class="hidden-div-${data._id}"></div>
+                  <div class="text-right">
+                     <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+                  </div>
+                </form>
+                `
+                );
 
+                data.checklists.forEach(function(checklistItem){
+                  $(".hidden-div-"+data._id).append(
+                    `
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                        <input type="checkbox" class="ckbox" aria-label="Checkbox for following text input">
+                      </span>
+                      <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
+                    </div>
+                    `
+                  );
+                });
+              } else {
+                this.originalItem.html(
+                `
+                <div class="text-right">
+                    <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form class="edit-note-form" action="/notes/${data._id}" method="POST">
                     <textarea class="note-content" name="text">${data.text}</textarea>
                     <div class="text-right">
                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
@@ -273,6 +307,8 @@ $(document).ready(function(){
                 `
                 );
                 autosize($(".note-content"));
+              }
+
             }
         });
     });
@@ -297,113 +333,3 @@ $(document).ready(function(){
         }
     });
 });
-
-
-
-
-// OLD CODE
-//=======================================================
-//=======================================================
-//=======================================================
-
-    // if using textarea
-    // $("textarea").on("focus", function(){
-    //     // console.log("inside textarea");
-
-    //     var ta = $("textarea");
-
-    //     autosize(ta);
-    //     autosize.update(ta);
-    // });
-
-
-
-    // $("#logout-btn").on("click", function(){
-    //     $.get("/logout", function(data){});
-    // });
-
-    // $("#modal-login-btn").on("click", function(){
-    //     $("#login-modal").modal("hide");
-    // });
-
-    // $("#login-form").submit(function(e){
-    //     e.preventDefault();
-
-    //     var user = $(this).serialize();
-
-    //     $.post("/login", user, function(data){
-    //         if(!data.error) {
-    //             $("#login-modal").modal("hide");
-    //             // window.location.replace("/notes");
-    //             $("#new-note-form").prepend(
-    //             `
-    //             <div class="alert alert-success">
-    //                 <strong>${data.message}</strong>
-    //             </div>
-    //             `
-    //             );
-    //             // debugger
-    //             $(".alert-success").delay(2000).fadeOut();
-    //         } else {
-    //             $("#login-modal").modal("hide");
-    //             $(".jumbotron").prepend(
-    //             `
-    //             <div class="alert alert-danger">
-    //                 <strong>${data.error}</strong>
-    //             </div>
-    //             `
-    //             );
-    //             $(".alert-danger").delay(2000).fadeOut();
-    //         }
-    //     });
-    // });
-
-    // $("#new-user-form").submit(function(e){
-    //     e.preventDefault();
-
-    //     var newUser = $(this).serialize();
-
-    //     $.post("/register", newUser, function(data){
-    //         if(!data.error) {
-    //             $("#register-modal").modal("hide");
-    //             // window.location.replace("/notes");
-    //             $("#new-note-form").prepend(
-    //             `
-    //             <div class="alert alert-success">
-    //                 <strong>${data.message}</strong>
-    //             </div>
-    //             `
-    //             );
-    //         } else {
-    //             $("#register-modal").modal("hide");
-    //             $("#new-note-form").prepend(
-    //             `
-    //             <div class="alert alert-success">
-    //                 <strong>${data.message}</strong>
-    //             </div>
-    //             `
-    //             );
-    //         }
-    //     });
-    // });
-
-    // $.get("/notes", function(notes){
-    //     notes.forEach(function(note){
-    //         $("#note-row").prepend(
-    //         `
-    //         <div class="col-md-2">
-    //             <div class="card">
-    //                 <div class="card-block">
-    //                     <div class="text-right">
-    //                         <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
-    //                             <i class="fa fa-trash-o" aria-hidden="true"></i>
-    //                         </button>
-    //                     </div>
-    //                     <p class="card-text">${note.text}</p>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //         `
-    //         );
-    //     });
-    // });

@@ -87,6 +87,15 @@ textarea {
   margin-bottom: 10px;
 }
 
+.new-note-text {
+  background-color: #FFFFA5;
+  margin-bottom: 10px;
+}
+
+.new-note-text:focus {
+  background-color: #FFFFA5;
+}
+
 .note-text-input {
   background-color: #FFFFA5;
   margin-bottom: 10px;
