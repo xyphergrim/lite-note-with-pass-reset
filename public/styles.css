@@ -67,6 +67,7 @@ textarea {
     height: auto;
     min-height: 75px;
     outline: none;
+    color: rgba(70, 74, 76, 1);
 }
 
 .note-content:focus {
@@ -103,6 +104,10 @@ textarea {
 
 .note-text-input:focus {
   background-color: #FFFFA5;
+}
+
+.input-group-addon {
+  background-color: inherit;
 }
 
 #login-btn {

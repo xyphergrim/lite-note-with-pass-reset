@@ -2,7 +2,6 @@
 
 $(document).ready(function(){
     var isChecklistOn = false;
-    var isChecklist = false;
     var ta = $("textarea");
 
     autosize(ta);
@@ -40,7 +39,6 @@ $(document).ready(function(){
 
         if($(".checklist-btn").hasClass("active")) {
             isChecklistOn = true;
-            isChecklist = true;
 
             $("#done-btn").attr("value", "true");
 
@@ -66,7 +64,6 @@ $(document).ready(function(){
 
             $(".checkbox-txt").remove();
             isChecklistOn = false;
-            isChecklist = false;
         }
     });
 
@@ -79,11 +76,12 @@ $(document).ready(function(){
         console.log(this);
         if($(this).is(":checked")) {
             console.log(this);
-            $(this).closest(".ckbox-div").css("text-decoration", "line-through");
-            $(this).parent(".ckbox-div").siblings(".text-right").children(".update-btn").show();
+            $(this).parents(".input-group").css("text-decoration", "line-through");
+            $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
             $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
         } else if(!($(this).is(":checked"))) {
-            $(this).closest(".ckbox-div").css("text-decoration", "none");
+            $(this).parents(".input-group").css("text-decoration", "none");
+            $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(70, 74, 76, 1)");
         }
     });
 
