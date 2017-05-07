@@ -14,8 +14,9 @@ var express = require("express"),
 var middlewareObj = {};
 
 var port = process.env.PORT || 3000;
-// var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
-mongoose.connect("mongodb://localhost/lite_note_ian_version");
+var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
+// mongoose.connect("mongodb://localhost/lite_note_ian_version");
+mongoose.connect(url);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
