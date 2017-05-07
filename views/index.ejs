@@ -56,15 +56,15 @@
                                     <% if(note.text !== null && note.text !== undefined) { %>
                                         <textarea class="note-content" name="text"><%= note.text %></textarea>
                                     <% } else { %>
-                                        <% note.checklists.forEach(function(checklistItem) { %>
-                                            <!-- <div class="ckbox-div"><input type="checkbox" name="checkboxes[]" class="ckbox"> <%= checklistItem %></div> -->
+                                        <% for(var i = 0; i < note.checklists.length; i++) { %>
                                             <div class="input-group">
                                               <span class="input-group-addon">
-                                                <input type="checkbox" class="ckbox" aria-label="Checkbox for following text input">
+                                                <input type="hidden" name="checkbox-<%= note.checklists[i] %>" value="off">
+                                                <input type="checkbox" class="ckbox" name="checkbox-<%= note.checklists[i] %>" aria-label="Checkbox for following text input" <%= note.checkboxes[i] ? 'checked' : null %>>
                                               </span>
-                                              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="<%= checklistItem %>">
+                                              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="<%= note.checklists[i] %>">
                                             </div>
-                                        <% }); %>
+                                        <% }; %>
                                     <% } %>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>

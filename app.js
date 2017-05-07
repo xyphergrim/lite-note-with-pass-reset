@@ -14,8 +14,8 @@ var express = require("express"),
 var middlewareObj = {};
 
 var port = process.env.PORT || 3000;
-var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
-mongoose.connect(url);
+// var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
+mongoose.connect("mongodb://localhost/lite_note_ian_version");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(expressSanitizer());
@@ -49,7 +49,7 @@ app.get("/", function(req, res){
     res.redirect("/notes");
 });
 
-// had this --> middleware.isLoggedIn,
+// GET ROUTE
 app.get("/notes", function(req, res){
     Note.find({}, null, {sort: {createdAt: -1}}, function(err, notes){
         if(err) {
@@ -144,8 +144,11 @@ app.post("/notes", function(req, res){
         for(var i = 0; i < formData.checklists.length; i++) {
             if(formData.checklists[i] === "") {
                 formData.checklists.splice(i, 1);
+                i--;
             }
         }
+      // create an array with as many spaces as there are checklists
+      formData.checkboxes = new Array(req.body.checklists.length);
     }
 
     console.log(formData);
@@ -157,17 +160,30 @@ app.post("/notes", function(req, res){
             res.json(newlyCreated);
         }
     });
-
-    // if(formData !== undefined) {
-    //     if(formData.trim() !== "") {
-
-    //     }
-    // }
 });
 
 // UPDATE ROUTE
 app.put("/notes/:id", function(req, res){
-    Note.findByIdAndUpdate(req.params.id, req.body, {new: true}, function(err, note){
+    // set checkboxes var equal to req.body
+    var checkboxes = Object.assign({}, req.body);
+    // remove the checklists array
+    delete checkboxes.checklists;
+    // create an empty array
+    var checkboxValues = [];
+    // iterate over the object and create a new array that indicates if the checkbox was checked or not
+    for(checkbox in checkboxes) {
+        if(checkboxes[checkbox] === 'off') {
+            checkboxValues.push(false);
+        } else {
+            checkboxValues.push(true);
+        }
+    }
+    // create brand new object from checkboxValues and req.body.checklists
+    var newNoteData = {};
+    newNoteData.checklists = req.body.checklists;
+    newNoteData.checkboxes = checkboxValues;
+    // update the note with new data
+    Note.findByIdAndUpdate(req.params.id, newNoteData, {new: true}, function(err, note){
         if(err) {
             console.log(err);
         } else {

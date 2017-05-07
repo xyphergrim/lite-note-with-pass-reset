@@ -5,6 +5,9 @@ $(document).ready(function(){
     var ta = $("textarea");
 
     autosize(ta);
+    
+    // checks which elements are checked on page load for styling
+    isChecked();
 
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
 
@@ -67,10 +70,6 @@ $(document).ready(function(){
         }
     });
 
-    // if($(".ckbox").is(":checked")) {
-    //     $(".ckbox-div").css("text-decoration", "line-through");
-    // }
-
     // when todo is checked then strike through and other styling
     $("#note-row").on("change", ".ckbox", function(){
         console.log(this);
@@ -82,6 +81,7 @@ $(document).ready(function(){
         } else if(!($(this).is(":checked"))) {
             $(this).parents(".input-group").css("text-decoration", "none");
             $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(70, 74, 76, 1)");
+            $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
         }
     });
 
@@ -184,18 +184,19 @@ $(document).ready(function(){
             //   <input type="checkbox" class="ckbox">
             //   <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
             // </div>
-            data.checklists.forEach(function(checklistItem){
+            for(var i = 0; i < data.checklists.length; i++){
               $(".hidden-div-"+data._id).append(
                 `
                 <div class="input-group">
                   <span class="input-group-addon">
-                    <input type="checkbox" class="ckbox" aria-label="Checkbox for following text input">
+                    <input type="hidden" name="checkbox-${ data.checklists[i] }" value="off">
+                    <input type="checkbox" class="ckbox" name="checkbox-${ data.checklists[i] }" aria-label="Checkbox for following text input" ${ data.checkboxes[i] ? 'checked' : null }>
                   </span>
-                  <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
+                  <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[i]}">
                 </div>
                 `
               );
-            });
+            }
 
             $(".checklist-btn").removeClass("active");
             $(".checkbox-txt").remove();
@@ -244,14 +245,15 @@ $(document).ready(function(){
     // EDIT CARD - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
+        
+        console.log("in here in here");
 
         var noteItem = $(this).serialize();
         var actionUrl = $(this).attr("action");
         var $originalItem = $(this).parent(".card-block");
+        // var inputGroup = $(this).find(".input-group");
 
-        // console.log(noteItem);
-        // debugger
-        console.log($originalItem);
+        // console.log(inputGroup);
 
         $.ajax({
             url: actionUrl,
@@ -276,18 +278,30 @@ $(document).ready(function(){
                 `
                 );
 
-                data.checklists.forEach(function(checklistItem){
+                // iterate through checkboxes and append them to the DOM
+                for(var i = 0; i < data.checklists.length; i++ ) {
                   $(".hidden-div-"+data._id).append(
                     `
                     <div class="input-group">
                       <span class="input-group-addon">
-                        <input type="checkbox" class="ckbox" aria-label="Checkbox for following text input">
+                        <input type="hidden" name="checkbox-${ data.checklists[i] }" value="off">
+                        <input type="checkbox" class="ckbox" name="checkbox-${ data.checklists[i] }" aria-label="Checkbox for following text input" ${ data.checkboxes[i] ? 'checked' : null }>
                       </span>
-                      <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
+                      <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[i]}">
                     </div>
                     `
                   );
-                });
+                  
+                  // find which checkboxes have been "checked," and then strike-through and lighten text
+                  var checkBox = $(`[name="checkbox-${data.checklists[i]}"]`);
+                  console.log(checkBox);
+                  
+                  if(checkBox.is(":checked")) {
+                    checkBox.parents(".input-group").css("text-decoration", "line-through");
+                    checkBox.parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
+                  }
+                  
+                }
               } else {
                 this.originalItem.html(
                 `
@@ -330,4 +344,24 @@ $(document).ready(function(){
             });
         }
     });
+    
+    // checks which elements are checked on page load for styling
+    function isChecked(){
+      var ckboxCount = $(".ckbox").length;
+  
+      var items = [];
+      
+      $(".ckbox").each(function(i, e){
+        items.push($(e));
+      });
+      
+      console.log(items);
+      
+      for(var i = 0; i < ckboxCount; i++) {
+        if(items[i].is(":checked")) {
+          items[i].parents(".input-group").css("text-decoration", "line-through");
+          items[i].parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
+        }
+      }
+    }
 });
