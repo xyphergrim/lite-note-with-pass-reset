@@ -152,12 +152,11 @@ app.post("/notes", function(req, res){
       formData.checkboxes = new Array(req.body.checklists.length);
     }
 
-    console.log(formData);
-
     Note.create(formData, function(err, newlyCreated){
         if(err) {
             console.log(err);
         } else {
+          console.log(formData);
             res.json(newlyCreated);
         }
     });
@@ -165,24 +164,33 @@ app.post("/notes", function(req, res){
 
 // UPDATE ROUTE
 app.put("/notes/:id", function(req, res){
-    // set checkboxes var equal to req.body
-    var checkboxes = Object.assign({}, req.body);
-    // remove the checklists array
-    delete checkboxes.checklists;
-    // create an empty array
-    var checkboxValues = [];
-    // iterate over the object and create a new array that indicates if the checkbox was checked or not
-    for(checkbox in checkboxes) {
-        if(checkboxes[checkbox] === 'off') {
-            checkboxValues.push(false);
-        } else {
-            checkboxValues.push(true);
-        }
+    if(req.body.text) {
+      var newNoteData = req.body;
+    } else {
+      // set checkboxes var equal to req.body
+      var checkboxes = Object.assign({}, req.body);
+      // remove the checklists array
+      delete checkboxes.checklists;
+      // create an empty array
+      var checkboxValues = [];
+      // iterate over the object and create a new array that indicates if the checkbox was checked or not
+      for(checkbox in checkboxes) {
+          if(checkboxes[checkbox] === 'off') {
+              checkboxValues.push(false);
+          } else {
+              checkboxValues.push(true);
+          }
+      }
+
+      // create brand new object from checkboxValues and req.body.checklists
+      var newNoteData = {};
+      newNoteData.title = req.body.title;
+      newNoteData.checklists = req.body.checklists;
+      newNoteData.checkboxes = checkboxValues;
     }
-    // create brand new object from checkboxValues and req.body.checklists
-    var newNoteData = {};
-    newNoteData.checklists = req.body.checklists;
-    newNoteData.checkboxes = checkboxValues;
+
+    console.log()
+
     // update the note with new data
     Note.findByIdAndUpdate(req.params.id, newNoteData, {new: true}, function(err, note){
         if(err) {

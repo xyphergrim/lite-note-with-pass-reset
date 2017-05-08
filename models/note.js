@@ -1,13 +1,10 @@
 var mongoose = require("mongoose");
 
 var noteSchema = new mongoose.Schema({
+    title: {type: String, default: ""},
     text: String,
     checklists: Array,
     checkboxes: Array,
-    // isChecked: {
-    //     type: Boolean,
-    //     default: false
-    // },
     createdAt: {
         type: Date,
         default: Date.now

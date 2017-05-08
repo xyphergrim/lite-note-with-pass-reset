@@ -5,7 +5,7 @@ $(document).ready(function(){
     var ta = $("textarea");
 
     autosize(ta);
-    
+
     // checks which elements are checked on page load for styling
     isChecked();
 
@@ -50,7 +50,7 @@ $(document).ready(function(){
             $("#new-note-form").prepend(
             `
             <div class="checkbox-txt">
-              <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
+              <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]" placeholder="Walk the dog">
             </div>
             `
             );
@@ -87,6 +87,10 @@ $(document).ready(function(){
 
     $("#note-row").on("click", ".note-text-input", function(){
       $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+    });
+
+    $("#note-row").on("click", ".title-text", function(){
+      $(this).parents(".edit-note-form").find(".update-btn").show();
     });
 
     $(document).keypress(function(e) {
@@ -168,6 +172,7 @@ $(document).ready(function(){
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                             <div class="hidden-div-${data._id}"></div>
                             <div class="text-right">
                                <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
@@ -225,6 +230,7 @@ $(document).ready(function(){
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                               <textarea class="note-content" name="text">${data.text}</textarea>
                               <div class="text-right">
                                   <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
@@ -245,7 +251,7 @@ $(document).ready(function(){
     // EDIT CARD - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
-        
+
         console.log("in here in here");
 
         var noteItem = $(this).serialize();
@@ -270,6 +276,7 @@ $(document).ready(function(){
                     </button>
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                  <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                   <div class="hidden-div-${data._id}"></div>
                   <div class="text-right">
                      <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
@@ -291,16 +298,16 @@ $(document).ready(function(){
                     </div>
                     `
                   );
-                  
+
                   // find which checkboxes have been "checked," and then strike-through and lighten text
                   var checkBox = $(`[name="checkbox-${data.checklists[i]}"]`);
                   console.log(checkBox);
-                  
+
                   if(checkBox.is(":checked")) {
                     checkBox.parents(".input-group").css("text-decoration", "line-through");
                     checkBox.parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
                   }
-                  
+
                 }
               } else {
                 this.originalItem.html(
@@ -311,6 +318,7 @@ $(document).ready(function(){
                     </button>
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                    <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                     <textarea class="note-content" name="text">${data.text}</textarea>
                     <div class="text-right">
                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
@@ -344,19 +352,19 @@ $(document).ready(function(){
             });
         }
     });
-    
+
     // checks which elements are checked on page load for styling
     function isChecked(){
       var ckboxCount = $(".ckbox").length;
-  
+
       var items = [];
-      
+
       $(".ckbox").each(function(i, e){
         items.push($(e));
       });
-      
-      console.log(items);
-      
+
+      // console.log(items);
+
       for(var i = 0; i < ckboxCount; i++) {
         if(items[i].is(":checked")) {
           items[i].parents(".input-group").css("text-decoration", "line-through");
