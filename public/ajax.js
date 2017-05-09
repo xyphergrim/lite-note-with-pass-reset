@@ -3,11 +3,15 @@
 $(document).ready(function(){
     var isChecklistOn = false;
     var ta = $("textarea");
+    var totalCardCount = $(".card").length;
 
     autosize(ta);
 
     // checks which elements are checked on page load for styling
     isChecked();
+
+    // if cardCount > 30 cards hide the rest
+    // hideExtraCards();
 
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
 
@@ -92,6 +96,10 @@ $(document).ready(function(){
     $("#note-row").on("click", ".title-text", function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
+
+    // $("#load-more-notes").on("click", function(){
+    //   showExtraCards();
+    // });
 
     $(document).keypress(function(e) {
         // if Enter key is pressed while the note-text-input has focus, and
@@ -371,5 +379,31 @@ $(document).ready(function(){
           items[i].parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
         }
       }
+    }
+
+    function hideExtraCards(){
+      // var cardCount = $(".card").length;
+
+      if(totalCardCount > 30) {
+        var items = [];
+
+        $(".card").each(function(i, e){
+          items.push($(e));
+        });
+
+        for(var i = 30; i < totalCardCount; i++){
+          items[i].hide();
+        }
+
+        // $("#load-more-notes").show();
+      } else {
+        $("#load-more-notes").hide();
+      }
+    }
+
+    function showExtraCards(){
+      var cardCount = $(".card").length;
+      // alert("cards: " + cardCount);
+
     }
 });

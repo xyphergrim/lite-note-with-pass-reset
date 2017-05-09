@@ -141,7 +141,7 @@ app.post("/notes", function(req, res){
     // req.body.note ? formData.text = req.body.note.text : formData.checklists = req.body.checklists;
 
     if(formData.checklists) {
-      console.log(formData.checklists.length);
+      // console.log(formData.checklists.length);
         for(var i = 0; i < formData.checklists.length; i++) {
             if(formData.checklists[i] === "") {
                 formData.checklists.splice(i, 1);
@@ -175,12 +175,22 @@ app.put("/notes/:id", function(req, res){
       var checkboxValues = [];
       // iterate over the object and create a new array that indicates if the checkbox was checked or not
       for(checkbox in checkboxes) {
-          if(checkboxes[checkbox] === 'off') {
+        console.log("checkbox is: " + checkbox);
+
+          if(checkboxes[checkbox] === 'off' || checkboxes[checkbox] === "title") {
               checkboxValues.push(false);
+              // console.log("false");
           } else {
               checkboxValues.push(true);
+              // console.log("true");
           }
+          // console.log(checkboxValues);
       }
+
+      // first checkboxValue added is ALWAYS "title" from the title field. so we
+      // want to remove that value since it returns as true
+      checkboxValues.shift();
+      console.log(checkboxValues);
 
       // create brand new object from checkboxValues and req.body.checklists
       var newNoteData = {};
@@ -188,8 +198,6 @@ app.put("/notes/:id", function(req, res){
       newNoteData.checklists = req.body.checklists;
       newNoteData.checkboxes = checkboxValues;
     }
-
-    console.log()
 
     // update the note with new data
     Note.findByIdAndUpdate(req.params.id, newNoteData, {new: true}, function(err, note){

@@ -113,6 +113,7 @@ textarea {
 .title-text {
   background-color: #FFFFA5;
   border: none;
+  font-weight: bold;
 }
 
 .title-text:focus {
@@ -133,6 +134,11 @@ textarea {
 
 #upcoming-features {
     float: right;
+}
+
+#load-more-notes {
+  margin: auto auto 25px auto;
+  display: block;
 }
 
 /*#update-btn {*/
