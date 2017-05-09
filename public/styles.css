@@ -22,10 +22,6 @@ textarea {
     border: none;
 }
 
-.thumbnail {
-    text-align: center;
-}
-
 .form-style {
     width: 30%;
     margin: 30px auto;
@@ -55,11 +51,11 @@ textarea {
     background-color: #FFFFA5;
 }
 
-.card-text {
-    white-space: pre-wrap;
+.checklist-btn {
+    background-color: #FFFFA5;
 }
 
-.checklist-btn {
+.reminder-btn {
     background-color: #FFFFA5;
 }
 
@@ -71,9 +67,9 @@ textarea {
     color: rgba(70, 74, 76, 1);
 }
 
-.note-content:focus {
-    background-color: rgba(25, 25, 25, .1);
-}
+/*.note-content:focus {*/
+/*    background-color: rgba(25, 25, 25, .1);*/
+/*}*/
 
 .update-btn {
     display: none;
@@ -122,6 +118,10 @@ textarea {
   background-color: #FFFFA5;
 }
 
+.reminder-field {
+    display: none;
+}
+
 #login-btn {
     margin-right: 10px;
 }
@@ -143,10 +143,6 @@ textarea {
   display: block;
 }
 
-/*#update-btn {*/
-/*    background-color: #FFFFA5;*/
-/*}*/
-
 [contenteditable=true]:empty:before {
   content: attr(data-placeholder);
   opacity: .5;
@@ -154,7 +150,7 @@ textarea {
 
 @media (max-width: 991px) {
     .jumbotron {
-        height: 475px;
+        height: 530px;
     }
 
     #upcoming-features {

@@ -4,6 +4,7 @@ $(document).ready(function(){
     var isChecklistOn = false;
     var ta = $("textarea");
     var totalCardCount = $(".card").length;
+    // alert(totalCardCount);
 
     autosize(ta);
 
@@ -11,7 +12,7 @@ $(document).ready(function(){
     isChecked();
 
     // if cardCount > 30 cards hide the rest
-    // hideExtraCards();
+    hideExtraCards();
 
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
 
@@ -73,6 +74,14 @@ $(document).ready(function(){
             isChecklistOn = false;
         }
     });
+    
+    // $(".reminder-btn").on("click", function(){
+    //   if($(".reminder-field").css("display", "none")) {
+    //     $(".reminder-field").show();
+    //   } else {
+    //     $(".reminder-field").hide();
+    //   }
+    // });
 
     // when todo is checked then strike through and other styling
     $("#note-row").on("change", ".ckbox", function(){
@@ -97,9 +106,9 @@ $(document).ready(function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
 
-    // $("#load-more-notes").on("click", function(){
-    //   showExtraCards();
-    // });
+    $("#load-more-notes").on("click", function(){
+      showExtraCards();
+    });
 
     $(document).keypress(function(e) {
         // if Enter key is pressed while the note-text-input has focus, and
@@ -214,6 +223,9 @@ $(document).ready(function(){
             $(".checklist-btn").removeClass("active");
             $(".checkbox-txt").remove();
             isChecklistOn = false;
+            
+            totalCardCount++;
+            // console.log(totalCardCount);
 
             $("#new-note-form").prepend(
               `
@@ -250,6 +262,9 @@ $(document).ready(function(){
                `
               );
 
+            totalCardCount++;
+            // console.log(totalCardCount);
+            
             autosize($(".note-content"));
             $(".new-note-content").val("");
           });
@@ -381,6 +396,7 @@ $(document).ready(function(){
       }
     }
 
+    // hide extra cards if more than 30 on page
     function hideExtraCards(){
       // var cardCount = $(".card").length;
 
@@ -394,16 +410,30 @@ $(document).ready(function(){
         for(var i = 30; i < totalCardCount; i++){
           items[i].hide();
         }
-
-        // $("#load-more-notes").show();
       } else {
         $("#load-more-notes").hide();
       }
     }
 
+    // load 30 more cards at a time until all shown
     function showExtraCards(){
-      var cardCount = $(".card").length;
-      // alert("cards: " + cardCount);
+      var cardCount = $(".card:visible").length;
+      // alert("visible cards: " + cardCount);
+      
+      if(cardCount < totalCardCount) {
+        var items = [];
 
+        $(".card:hidden").each(function(i, e){
+          items.push($(e));
+        });
+
+        for(var i = 0; i < 30 && i <totalCardCount; i++){
+          items[i].show();
+        }
+      }
+      
+      if(cardCount === totalCardCount) {
+        $("#load-more-notes").hide();
+      }
     }
 });
