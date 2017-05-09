@@ -177,7 +177,7 @@ app.put("/notes/:id", function(req, res){
       for(checkbox in checkboxes) {
         console.log("checkbox is: " + checkbox);
 
-          if(checkboxes[checkbox] === 'off' || checkboxes[checkbox] === "title") {
+          if(checkboxes[checkbox] === 'off') {
               checkboxValues.push(false);
               // console.log("false");
           } else {
