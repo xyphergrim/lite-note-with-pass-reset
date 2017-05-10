@@ -40,6 +40,40 @@ $(document).ready(function(){
     $("#note-row").on("click", ".note-content", function(){
         $(this).siblings(".text-right").children(".update-btn").show();
     });
+    
+    // for adding labels to help filter cards
+    $("#note-row").on("click", ".label-btn", function(){
+      $(this).closest(".card-block").children(".edit-note-form").prepend(
+        `
+        <input type="text" class="form-control label-input" name="labelFilter" placeholder="#label">
+        `
+      );
+      
+      $(this).closest(".card-block").children(".edit-note-form").find(".update-btn").show();
+    });
+    
+    // to allow archiving of cards in case user would rather not delete them
+    $("#note-row").on("click", ".archive-btn", function(){
+      $(this).closest(".card-block").children(".edit-note-form").prepend(
+        `
+        <input type="hidden" name="archiveValue" value="on">
+        `
+      );
+      
+      var archiveCard = true;
+      
+      $(this).closest(".card-block").children(".edit-note-form").submit();
+      
+      if(archiveCard) {
+        $(this).closest(".col-md-2").hide();
+      }
+    });
+    
+    // <div class="input-group">
+    // <span class="input-group-btn">
+    //         <button class="btn btn-secondary label-input-btn" type="button">Add</button>
+    //       </span>
+    //     </div>
 
     // toggle a checklist feature on note card
     $(".checklist-btn").on("click", function(){
@@ -74,14 +108,6 @@ $(document).ready(function(){
             isChecklistOn = false;
         }
     });
-    
-    // $(".reminder-btn").on("click", function(){
-    //   if($(".reminder-field").css("display", "none")) {
-    //     $(".reminder-field").show();
-    //   } else {
-    //     $(".reminder-field").hide();
-    //   }
-    // });
 
     // when todo is checked then strike through and other styling
     $("#note-row").on("change", ".ckbox", function(){
@@ -141,31 +167,76 @@ $(document).ready(function(){
     // GET CARDS
     // $.get("/notes", function(notes){
     //     notes.forEach(function(note){
-
-    //             $("user-input").after(
-    //             `
-    //             <div class="col-md-2">
-    //                 <div class="card">
-    //                     <div class="card-block">
-    //                         <div class="text-right">
-    //                             <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
-    //                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
-    //                             </button>
-    //                         </div>
-    //                         <form class="edit-note-form" action="/notes/${note._id}" method="POST">
-    //                             <textarea name="note[text]">${note.text}</textarea>
-    //                             <div class="text-right">
-    //                                 <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
-    //                             </div>
-    //                         </form>
-    //                         <p class="card-text ${note._id}">${note.text}</p>
+    //       if(note.author.id.equals(currentUser._id)) {
+    //         $("#user-input").after(
+    //         `
+    //         <div class="col-md-2">
+    //             <div class="card">
+    //                 <div class="card-block">
+    //                     <div class="dropdown">
+    //                       <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    //                         <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+    //                       </button>
+    //                       <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+    //                         <button class="dropdown-item label-btn" type="button">Add Label</button>
+    //                         <button class="dropdown-item archive-btn" type="button">Archive</button>
+    //                         <!--<button class="dropdown-item" type="button">Something else here</button>-->
+    //                       </div>
     //                     </div>
+    //                     <div class="text-right">
+    //                         <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
+    //                             <i class="fa fa-trash-o" aria-hidden="true"></i>
+    //                         </button>
+    //                     </div>
+    //                     <form class="edit-note-form" action="/notes/${note._id}" method="POST">
+    //                       <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${note.title}">
+    //                         <% if(note.text !== null && note.text !== undefined) { %>
+    //                             <textarea class="note-content" name="text"><%= note.text %></textarea>
+    //                         <% } else { %>
+    //                             <% for(var i = 0; i < note.checklists.length; i++) { %>
+    //                                 <div class="input-group">
+    //                                   <span class="input-group-addon">
+    //                                     <input type="hidden" name="checkbox-<%= note.checklists[i] %>" value="off">
+    //                                     <input type="checkbox" class="ckbox" name="checkbox-<%= note.checklists[i] %>" aria-label="Checkbox for following text input" <%= note.checkboxes[i] ? 'checked' : null %>>
+    //                                   </span>
+    //                                   <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="<%= note.checklists[i] %>">
+    //                                 </div>
+    //                             <% }; %>
+    //                         <% } %>
+    //                         <div class="text-right">
+    //                             <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+    //                         </div>
+    //                     </form>
     //                 </div>
     //             </div>
-    //             `
-    //             );
-
+    //         </div>
+    //         `
+    //         );
+    //       }
     //     });
+        
+          // $("#user-input").after(
+          // `
+          // <div class="col-md-2">
+          //     <div class="card">
+          //         <div class="card-block">
+          //             <div class="text-right">
+          //                 <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
+          //                     <i class="fa fa-trash-o" aria-hidden="true"></i>
+          //                 </button>
+          //             </div>
+          //             <form class="edit-note-form" action="/notes/${note._id}" method="POST">
+          //                 <textarea name="note[text]">${note.text}</textarea>
+          //                 <div class="text-right">
+          //                     <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
+          //                 </div>
+          //             </form>
+          //             <p class="card-text ${note._id}">${note.text}</p>
+          //         </div>
+          //     </div>
+          // </div>
+          // `
+          // );
     // });
     //=====================================================
 
@@ -183,6 +254,15 @@ $(document).ready(function(){
               <div class="col-md-2">
                   <div class="card">
                       <div class="card-block">
+                          <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+                              <button class="dropdown-item label-btn" type="button">Add Label</button>
+                              <button class="dropdown-item archive-btn" type="button">Archive</button>
+                            </div>
+                          </div>
                           <div class="text-right">
                               <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                                   <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -225,7 +305,17 @@ $(document).ready(function(){
             isChecklistOn = false;
             
             totalCardCount++;
-            // console.log(totalCardCount);
+            // if(totalCardCount > 30) {
+            //   var items = [];
+
+            //   $(".card").each(function(i, e){
+            //     items.push($(e));
+            //   });
+      
+            //   for(var i = 30; i < totalCardCount; i++){
+            //     items[i].hide();
+            //   }
+            // }
 
             $("#new-note-form").prepend(
               `
@@ -235,15 +325,22 @@ $(document).ready(function(){
           });
         } else {
           var noteItem = $(this).serialize();
-        //   console.log(noteItem);
 
           $.post("/notes", noteItem, function(data){
-              // debugger
               $("#user-input").after(
                `
               <div class="col-md-2">
                   <div class="card">
                       <div class="card-block">
+                          <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+                              <button class="dropdown-item label-btn" type="button">Add Label</button>
+                              <button class="dropdown-item archive-btn" type="button">Archive</button>
+                            </div>
+                          </div>
                           <div class="text-right">
                               <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                                   <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -263,7 +360,6 @@ $(document).ready(function(){
               );
 
             totalCardCount++;
-            // console.log(totalCardCount);
             
             autosize($(".note-content"));
             $(".new-note-content").val("");
@@ -275,14 +371,11 @@ $(document).ready(function(){
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
 
-        console.log("in here in here");
+        // console.log("in here in here");
 
         var noteItem = $(this).serialize();
         var actionUrl = $(this).attr("action");
         var $originalItem = $(this).parent(".card-block");
-        // var inputGroup = $(this).find(".input-group");
-
-        // console.log(inputGroup);
 
         $.ajax({
             url: actionUrl,
@@ -293,6 +386,15 @@ $(document).ready(function(){
               if(data.text === undefined) {
                 this.originalItem.html(
                 `
+                <div class="dropdown">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+                    <button class="dropdown-item label-btn" type="button">Add Label</button>
+                    <button class="dropdown-item archive-btn" type="button">Archive</button>
+                  </div>
+                </div>
                 <div class="text-right">
                     <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                         <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -335,6 +437,15 @@ $(document).ready(function(){
               } else {
                 this.originalItem.html(
                 `
+                <div class="dropdown">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+                    <button class="dropdown-item label-btn" type="button">Add Label</button>
+                    <button class="dropdown-item archive-btn" type="button">Archive</button>
+                  </div>
+                </div>
                 <div class="text-right">
                     <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                         <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -358,7 +469,6 @@ $(document).ready(function(){
 
     // DELETE CARD
     $("#note-row").on("click", ".delete-card-btn", function(){
-        // alert("button clicked!");
 
         var confirmResponse = confirm("Delete this card?");
 
@@ -373,6 +483,8 @@ $(document).ready(function(){
                     this.itemToDelete.remove();
                 }
             });
+            
+            totalCardCount--;
         }
     });
 
@@ -398,8 +510,6 @@ $(document).ready(function(){
 
     // hide extra cards if more than 30 on page
     function hideExtraCards(){
-      // var cardCount = $(".card").length;
-
       if(totalCardCount > 30) {
         var items = [];
 
@@ -418,7 +528,6 @@ $(document).ready(function(){
     // load 30 more cards at a time until all shown
     function showExtraCards(){
       var cardCount = $(".card:visible").length;
-      // alert("visible cards: " + cardCount);
       
       if(cardCount < totalCardCount) {
         var items = [];
@@ -427,7 +536,7 @@ $(document).ready(function(){
           items.push($(e));
         });
 
-        for(var i = 0; i < 30 && i <totalCardCount; i++){
+        for(var i = 0; i < 30 && i < totalCardCount; i++){
           items[i].show();
         }
       }

@@ -57,6 +57,21 @@ router.get("/notes", function(req, res){
     });
 });
 
+// GET ROUTE - Archive
+router.get("/notes/archive", function(req, res){
+    Note.find({}, null, {sort: {createdAt: -1}}, function(err, notes){
+        if(err) {
+            console.log(err);
+        } else {
+            if(req.xhr) {
+                res.json(notes);
+            } else {
+                res.render("archive", {notes: notes});
+            }
+        }
+    });
+});
+
 // POST ROUTE
 router.post("/notes", function(req, res){
     var author = {
@@ -101,31 +116,43 @@ router.put("/notes/:id", function(req, res){
       var checkboxes = Object.assign({}, req.body);
       // remove the checklists array
       delete checkboxes.checklists;
-      // remove the title
+      // remove the title because we only need checkboxes
       delete checkboxes.title;
+      // remove the label
+      //   delete checkboxes.labelFilter;
+      // remove the archive variable
+      delete checkboxes.archiveValue;
       // create an empty array
       var checkboxValues = [];
       // iterate over the object and create a new array that indicates if the checkbox was checked or not
       for(checkbox in checkboxes) {
-        console.log("checkbox is: " + checkbox);
+        // console.log("checkbox is: " + checkbox);
 
           if(checkboxes[checkbox] === 'off') {
               checkboxValues.push(false);
-              // console.log("false");
           } else {
               checkboxValues.push(true);
-              // console.log("true");
           }
-          // console.log(checkboxValues);
       }
-
-      // first checkboxValue added is ALWAYS "title" from the title field. so we
-      // want to remove that value since it returns as true
-     /* checkboxValues.shift();
-      console.log(checkboxValues);*/
+      
+      if(req.body.archiveValue === "on") {
+          var isArchive = true;
+      }
+      
+    //   var labelArray = 
+      
+    //   if(req.params.label === null || req.params.label === undefined) {
+    //     var labelArray = [];
+    //     labelArray.push(req.body.labelFilter);
+    //   } else {
+    //     var labelArray = req.params.label;
+    //     labelArray.push(req.body.labelFilter);
+    //   }
 
       // create brand new object from checkboxValues and req.body.checklists
       var newNoteData = {};
+    //   newNoteData.label.push(req.body.labelFilter);
+      newNoteData.archive = isArchive;
       newNoteData.title = req.body.title;
       newNoteData.checklists = req.body.checklists;
       newNoteData.checkboxes = checkboxValues;
@@ -148,6 +175,7 @@ router.delete("/notes/:id", function(req, res){
         if(err) {
             console.log(err);
         } else {
+            console.log("Note deleted");
             res.json(note);
         }
     });

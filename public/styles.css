@@ -1,6 +1,6 @@
 body {
     padding-top: 70px;
-    font-family: 'Vollkorn', serif;
+    font-family: 'Assistant', serif;
 }
 
 textarea {
@@ -15,6 +15,7 @@ textarea {
     box-shadow: none;
 
     background-color: #FFFFA5;
+    font-family: 'Assistant', serif;
 }
 
 .navbar {
@@ -64,7 +65,8 @@ textarea {
     height: auto;
     min-height: 75px;
     outline: none;
-    color: rgba(70, 74, 76, 1);
+    /*color: rgba(70, 74, 76, 1);*/
+    color: black;
 }
 
 /*.note-content:focus {*/
@@ -97,6 +99,8 @@ textarea {
 .note-text-input {
   background-color: #FFFFA5;
   margin-bottom: 10px;
+  font-family: 'Assistant', serif;
+  color: black;
 }
 
 .note-text-input:focus {
@@ -105,6 +109,18 @@ textarea {
 
 .input-group-addon {
   background-color: inherit;
+}
+
+.label-input {
+    background-color: #FFFFA5;
+}
+
+.label-input:focus {
+    background-color: #FFFFA5;
+}
+
+.label-input-btn {
+    background-color: #FFFFA5;
 }
 
 .title-text {
@@ -119,6 +135,26 @@ textarea {
 }
 
 .reminder-field {
+    display: none;
+}
+
+.more-options-btn {
+    background-color: #FFFFA5;
+    border: none;
+    float: left;
+}
+
+.more-options-btn:focus {
+    box-shadow: none;
+    /*-webkit-box-shadow: none;*/
+}
+
+/* removes arrow on bootstrap dropdown */
+/*.dropdown-toggle::after {*/
+/*    display:none*/
+/*}*/
+
+.dropdown-toggle.more-options-btn::after {
     display: none;
 }
 
@@ -141,6 +177,10 @@ textarea {
 #load-more-notes {
   margin: auto auto 25px auto;
   display: block;
+}
+
+#dropdownMenuButton {
+    margin-left: 10px;
 }
 
 [contenteditable=true]:empty:before {
