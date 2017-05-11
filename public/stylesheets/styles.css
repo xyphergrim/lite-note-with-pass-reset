@@ -158,6 +158,10 @@ textarea {
     display: none;
 }
 
+.archive-hr {
+    margin-bottom: 40px;
+}
+
 #login-btn {
     margin-right: 10px;
 }

@@ -4,7 +4,15 @@ $(document).ready(function(){
     var isChecklistOn = false;
     var ta = $("textarea");
     var totalCardCount = $(".card").length;
+    
+    // if($("#new-note-form:visible")) {
+    //   // -1 to negate the .card for adding a new note
+    //   totalCardCount--;
+    // }
+    
+    // var archivedCardCount = $(".is-archive").length;
     // alert(totalCardCount);
+    // alert(archivedCardCount);
 
     autosize(ta);
 
@@ -42,29 +50,36 @@ $(document).ready(function(){
     });
     
     // for adding labels to help filter cards
-    $("#note-row").on("click", ".label-btn", function(){
-      $(this).closest(".card-block").children(".edit-note-form").prepend(
-        `
-        <input type="text" class="form-control label-input" name="labelFilter" placeholder="#label">
-        `
-      );
+    // $("#note-row").on("click", ".label-btn", function(){
+    //   $(this).closest(".card-block").children(".edit-note-form").prepend(
+    //     `
+    //     <input type="text" class="form-control label-input" name="labelFilter" placeholder="#label">
+    //     `
+    //   );
       
-      $(this).closest(".card-block").children(".edit-note-form").find(".update-btn").show();
-    });
+    //   $(this).closest(".card-block").children(".edit-note-form").find(".update-btn").show();
+    // });
     
     // to allow archiving of cards in case user would rather not delete them
     $("#note-row").on("click", ".archive-btn", function(){
+      var archiveInput = $(this).closest(".card-block").children(".edit-note-form").children(".archive-input");
+      
       if($(this).hasClass("disabled")) {
         // do nothing
       } else {
         // set the value of archive-input to archive the card
-        $(this).closest(".card-block").children(".edit-note-form").children(".archive-input").attr("value", "on");
+        archiveInput.attr("value", "on");
+        
+        // set a new class so it is not counted with totalCardCount
+        archiveInput.addClass("is-archive");
   
         var archiveCard = true;
         
         $(this).closest(".card-block").children(".edit-note-form").submit();
         
         if(archiveCard) {
+          totalCardCount--;
+          console.log(totalCardCount);
           $(this).closest(".col-md-2").hide();
         }
       }

@@ -21,10 +21,12 @@ LiteNote
 ===============================
 
 Newest Features:
+- Archiving for "completed" cards as an alternative for deleting
 - Proper checklist/todo for note cards
 - In-place editing of note cards
 
-Working on:
-- Reminder feature that will send an alert/reminder to user email
+Possible features:
 - Labels/tags for filtering of cards
-- Archiving for "completed" cards as an alternative for deleting
+- Theme/color feature for note cards
+- Edit Profile page
+- Password Reset **for sure before go-live

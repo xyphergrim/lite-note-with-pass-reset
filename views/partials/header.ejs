@@ -38,10 +38,10 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                       <a class="dropdown-item" href="/notes">Home</a>
-                      <a class="dropdown-item" id="archive-vault" href="/notes/archive">Archive Vault</a>
+                      <a class="dropdown-item" id="archive-vault" href="/notes/archive">Archive</a>
                       <div class="dropdown-divider"></div>
                       <form class="form-inline" action="/logout" method="GET">
-                        <button type="submit" class="btn btn-secondary btn-sm my-2 my-sm-0" id="logout-btn">Logout</button>
+                        <button type="submit" class="btn btn-secondary btn-sm my-2 my-sm-0" id="logout-btn"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</button>
                       </form>
                     </div>
                   </div>
@@ -91,11 +91,11 @@
                 <!-- Register Form -->
                 <form action="/register" method="POST" id="new-user-form">
                     <div class="form-group">
-                        <label for="username" data-toggle="tooltip" data-placement="right" title="For account purposes">Email</label>
+                        <label for="username" data-toggle="tooltip" data-placement="right" title="For account purposes">Email <i class="fa fa-question-circle-o" aria-hidden="true"></i></label>
                         <input class="form-control" type="email" name="username" placeholder="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="profileName" data-toggle="tooltip" data-placement="right" title="Your profile display name">Username</label>
+                        <label for="profileName" data-toggle="tooltip" data-placement="right" title="Your profile display name">Username <i class="fa fa-question-circle-o" aria-hidden="true"></i></label>
                         <input class="form-control" type="text" name="profileName" placeholder="username" required>
                     </div>
                     <div class="form-group">

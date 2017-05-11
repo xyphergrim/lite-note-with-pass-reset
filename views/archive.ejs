@@ -2,6 +2,10 @@
 
     <!-- content -->
     <a name="toTop">
+    <div class="container">
+        <h1>Archived Note Cards</h1>
+        <hr class="archive-hr">
+    </div>
     <div class="container-fluid">
         <div class="row" id="note-row">
             <!--<div class="col-md-2" id="user-input">-->
@@ -30,7 +34,7 @@
                                     <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
                                   </button>
                                   <div class="dropdown-menu" aria-labelledby="optionsDropdown">
-                                    <button class="dropdown-item label-btn" type="button">Add Label</button>
+                                    <!--<button class="dropdown-item label-btn" type="button">Add Label</button>-->
                                     <button class="dropdown-item archive-btn disabled" type="button">Archive</button>
                                   </div>
                                 </div>
@@ -40,7 +44,7 @@
                                     </button>
                                 </div>
                                 <form class="edit-note-form" action="/notes/<%= note._id %>" method="POST">
-                                    <input type="hidden" class="archive-input" name="archiveValue" value="on">
+                                    <input type="hidden" class="archive-input is-archive" name="archiveValue" value="on">
                                   <input type="text" class="form-control title-text" name="title" placeholder="Title" value="<%= note.title %>">
                                     <% if(note.text !== null && note.text !== undefined) { %>
                                         <textarea class="note-content" name="text"><%= note.text %></textarea>
