@@ -10,6 +10,10 @@ var express = require("express"),
     User = require("./models/user"),
     // middleware = require("./middleware"),
     flash = require("connect-flash");
+    // nodemailer = require("nodemailer"),
+    // bcrypt = require("bcrypt-nodejs"),
+    // async = require("async"),
+    // crypto = require("crypto");
 
 // var middlewareObj = {};
 
@@ -17,7 +21,7 @@ var express = require("express"),
 var noteRoutes = require("./routes/notes");
 
 var port = process.env.PORT || 3000;
-var url = process.env.DATABASEURL || "mongodb://localhost/lite_note";
+var url = process.env.DATABASEURL || "mongodb://localhost/lite_note_v3_0";
 // mongoose.connect("mongodb://localhost/lite_note_ian_version");
 mongoose.connect(url);
 
@@ -36,9 +40,33 @@ app.use(require("express-session")({
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// passport.use(new LocalStrategy(User.authenticate()));
+// Passport LocalStrategy
+passport.use(new LocalStrategy(function(username, password, done){
+    User.findOne({username: username}, function(err, user){
+        if(err) return done(err);
+        if(!user) return done(null, false, {message: "Incorrect username."});
+        user.comparePassword(password, function(err, isMatch){
+            if(isMatch) {
+                return done(null, user);
+            } else {
+                return done(null, false, {message: "Incorrect password."});
+            }
+        });
+    });
+}));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+});
+passport.deserializeUser(function(id, done){
+    User.findById(id, function(err, user){
+        done(err, user);
+    });
+});
+
+
 
 // middleware to run for every route
 app.use(function(req, res, next){

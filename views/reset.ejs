@@ -1,0 +1,13 @@
+<% include ./partials/header %>
+
+<div class="container">
+    <form action="/reset/<%= user.resetPasswordToken %>" method="POST">
+      <div class="form-group">
+        <label for="password">New Password</label>
+        <input type="password" class="form-control" name="password" placeholder="New Password" autofocus>
+      </div>
+      <button type="submit" class="btn btn-primary">Update Password</button>
+    </form>
+</div>
+
+<% include ./partials/footer %>

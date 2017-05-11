@@ -65,11 +65,12 @@
                 <!-- Login Form -->
                 <form action="/login" method="POST" id="login-form">
                     <div class="form-group">
-                        <input class="form-control" type="email" name="username" placeholder="email" required>
+                        <input class="form-control" type="text" name="username" placeholder="username" required>
                     </div>
                     <div class="form-group">
                         <input class="form-control" type="password" name="password" placeholder="password" required>
                     </div>
+                    <a href="/forgot">Forgot password?</a>
                     <button type="submit" class="btn btn-primary pull-right" id="modal-login-btn">Login</button>
                 </form>
               </div>
@@ -91,12 +92,12 @@
                 <!-- Register Form -->
                 <form action="/register" method="POST" id="new-user-form">
                     <div class="form-group">
-                        <label for="username" data-toggle="tooltip" data-placement="right" title="For account purposes">Email <i class="fa fa-question-circle-o" aria-hidden="true"></i></label>
-                        <input class="form-control" type="email" name="username" placeholder="email" required>
+                        <label for="email" data-toggle="tooltip" data-placement="right" title="For account purposes">Email <i class="fa fa-question-circle-o" aria-hidden="true"></i></label>
+                        <input class="form-control" type="email" name="email" placeholder="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="profileName" data-toggle="tooltip" data-placement="right" title="Your profile display name">Username <i class="fa fa-question-circle-o" aria-hidden="true"></i></label>
-                        <input class="form-control" type="text" name="profileName" placeholder="username" required>
+                        <label for="username" data-toggle="tooltip" data-placement="right" title="Your profile display name">Username <i class="fa fa-question-circle-o" aria-hidden="true"></i></label>
+                        <input class="form-control" type="text" name="username" placeholder="username" required>
                     </div>
                     <div class="form-group">
                         <label for="password" data-toggle="tooltip" data-placement="right" title="A password - duh!">Password</label>
