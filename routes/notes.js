@@ -111,6 +111,11 @@ router.post("/notes", function(req, res){
 router.put("/notes/:id", function(req, res){
     if(req.body.text) {
       var newNoteData = req.body;
+      
+      if(req.body.archiveValue === "on") {
+          var isArchive = true;
+          newNoteData.archive = isArchive;
+      }
     } else {
       // set checkboxes var equal to req.body
       var checkboxes = Object.assign({}, req.body);

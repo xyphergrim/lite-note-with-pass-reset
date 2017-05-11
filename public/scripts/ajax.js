@@ -54,26 +54,21 @@ $(document).ready(function(){
     
     // to allow archiving of cards in case user would rather not delete them
     $("#note-row").on("click", ".archive-btn", function(){
-      $(this).closest(".card-block").children(".edit-note-form").prepend(
-        `
-        <input type="hidden" name="archiveValue" value="on">
-        `
-      );
-      
-      var archiveCard = true;
-      
-      $(this).closest(".card-block").children(".edit-note-form").submit();
-      
-      if(archiveCard) {
-        $(this).closest(".col-md-2").hide();
+      if($(this).hasClass("disabled")) {
+        // do nothing
+      } else {
+        // set the value of archive-input to archive the card
+        $(this).closest(".card-block").children(".edit-note-form").children(".archive-input").attr("value", "on");
+  
+        var archiveCard = true;
+        
+        $(this).closest(".card-block").children(".edit-note-form").submit();
+        
+        if(archiveCard) {
+          $(this).closest(".col-md-2").hide();
+        }
       }
     });
-    
-    // <div class="input-group">
-    // <span class="input-group-btn">
-    //         <button class="btn btn-secondary label-input-btn" type="button">Add</button>
-    //       </span>
-    //     </div>
 
     // toggle a checklist feature on note card
     $(".checklist-btn").on("click", function(){
@@ -269,6 +264,7 @@ $(document).ready(function(){
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <input type="hidden" class="archive-input" name="archiveValue" value="off">
                             <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                             <div class="hidden-div-${data._id}"></div>
                             <div class="text-right">
@@ -347,6 +343,7 @@ $(document).ready(function(){
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <input type="hidden" class="archive-input" name="archiveValue" value="off">
                             <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                               <textarea class="note-content" name="text">${data.text}</textarea>
                               <div class="text-right">
@@ -401,6 +398,7 @@ $(document).ready(function(){
                     </button>
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                  <input type="hidden" class="archive-input" name="archiveValue" value="off">
                   <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                   <div class="hidden-div-${data._id}"></div>
                   <div class="text-right">
@@ -452,6 +450,7 @@ $(document).ready(function(){
                     </button>
                 </div>
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                    <input type="hidden" class="archive-input" name="archiveValue" value="off">
                     <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                     <textarea class="note-content" name="text">${data.text}</textarea>
                     <div class="text-right">

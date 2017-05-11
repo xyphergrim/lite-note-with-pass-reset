@@ -4,7 +4,7 @@
     <div class="container">
         <div class="jumbotron">
             <h1 class="display-3">LiteNote <i class="fa fa-sticky-note-o" aria-hidden="true"></i></h1>
-            <p class="lead">The lightweight note-taking, checklist-marking, and reminder-making web app!</p>
+            <p class="lead">The lightweight note-taking app</p>
             <hr class="my-4">
             <ul class="jumbotron-ul">
                 Newest features:
@@ -67,6 +67,7 @@
                                     </button>
                                 </div>
                                 <form class="edit-note-form" action="/notes/<%= note._id %>" method="POST">
+                                    <input type="hidden" class="archive-input" name="archiveValue" value="off">
                                   <input type="text" class="form-control title-text" name="title" placeholder="Title" value="<%= note.title %>">
                                     <% if(note.text !== null && note.text !== undefined) { %>
                                         <textarea class="note-content" name="text"><%= note.text %></textarea>
