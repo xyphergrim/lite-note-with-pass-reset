@@ -237,11 +237,22 @@ router.post("/forgot", function(req, res, next){
             });
         },
         function(token, user, done){
-            var smtpTransport = nodemailer.createTransport({
-                service: "SERVICE TO USE",
+            // var smtpConfig = {
+            //     host: 'smtp-pulse.com',
+            //     port: 465,
+            //     secure: true, // use SSL
+            //     auth: {
+            //         user: 'jc.xypher@gmail.com',
+            //         pass: 'pass@XknL3gsZ2eek'
+            //     }
+            // };
+            // var smtpTransport = nodemailer.createTransport(smtpConfig);
+                    // console.log(user.email);
+            var smtpTransporter = nodemailer.createTransport({
+                service: "SendPulse",
                 auth: {
-                    user: "EMAIL USERNAME",
-                    pass: "PASSWORD"
+                    user: "jc.xypher@gmail.com",
+                    pass: "XknL3gsZ2eek"
                 }
             });
             var mailOptions = {
@@ -253,7 +264,7 @@ router.post("/forgot", function(req, res, next){
                     "http://" + req.headers.host + "/reset/" + token + "\n\n" +
                     "If you did not request this, please ignore this email and your password will remain unchanged.\n"
             };
-            smtpTransport.sendMail(mailOptions, function(err){
+            smtpTransporter.sendMail(mailOptions, function(err){
                 req.flash("info", "An e-mail has been sent to " + user.email + " with further instructions.");
                 done(err, "done");
             });
@@ -297,11 +308,11 @@ router.post('/reset/:token', function(req, res) {
       });
     },
     function(user, done) {
-      var smtpTransport = nodemailer.createTransport('SMTP', {
-        service: 'SendGrid',
+      var smtpTransport = nodemailer.createTransport({
+        service: 'SendPulse',
         auth: {
-          user: 'xyphergrim',
-          pass: 'buzK78Dd340U'
+          user: 'jc.xypher@gmail.com',
+          pass: 'XknL3gsZ2eek'
         }
       });
       var mailOptions = {
