@@ -19,7 +19,7 @@ router.post("/register", function(req, res){
         email: req.body.email,
         password: req.body.password
     });
-    
+
     user.save(function(err){
         if(err) {
             console.log(err);
@@ -137,7 +137,7 @@ router.post("/notes", function(req, res){
 router.put("/notes/:id", function(req, res){
     if(req.body.text) {
       var newNoteData = req.body;
-      
+
       if(req.body.archiveValue === "on") {
           var isArchive = true;
           newNoteData.archive = isArchive;
@@ -165,13 +165,13 @@ router.put("/notes/:id", function(req, res){
               checkboxValues.push(true);
           }
       }
-      
+
       if(req.body.archiveValue === "on") {
           var isArchive = true;
       }
-      
-    //   var labelArray = 
-      
+
+    //   var labelArray =
+
     //   if(req.params.label === null || req.params.label === undefined) {
     //     var labelArray = [];
     //     labelArray.push(req.body.labelFilter);
@@ -227,10 +227,10 @@ router.post("/forgot", function(req, res, next){
                     req.flash("error", "No account with that email address exists.");
                     return res.redirect("/forgot");
                 }
-                
+
                 user.resetPasswordToken = token;
                 user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
-                
+
                 user.save(function(err){
                     done(err, token, user);
                 });
@@ -252,12 +252,12 @@ router.post("/forgot", function(req, res, next){
                 service: "SendPulse",
                 auth: {
                     user: "jc.xypher@gmail.com",
-                    pass: "XknL3gsZ2eek"
+                    pass: process.env.SENDPULSEPASS
                 }
             });
             var mailOptions = {
                 to: user.email,
-                from: "passwordreset@demo.com",
+                from: "jc.xypher@gmail.com",
                 subject: "Node.js Password Reset",
                 text: "You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n" +
                     "Please click on the following link, or paste this into your browser to complete the process:\n\n" +
@@ -282,7 +282,8 @@ router.get("/reset/:token", function(req, res){
             req.flash("error", "Password reset token is invalid or has expired.");
             return res.redirect("/forgot");
         }
-        res.render("reset", {user: req.user});
+        // console.log(user.resetPasswordToken);
+        res.render("reset", {user: req.user, resetPasswordToken: req.params.token});
     });
 });
 
@@ -312,12 +313,12 @@ router.post('/reset/:token', function(req, res) {
         service: 'SendPulse',
         auth: {
           user: 'jc.xypher@gmail.com',
-          pass: 'XknL3gsZ2eek'
+          pass: process.env.SENDPULSEPASS
         }
       });
       var mailOptions = {
         to: user.email,
-        from: 'passwordreset@demo.com',
+        from: 'jc.xypher@gmail.com',
         subject: 'Your password has been changed',
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
