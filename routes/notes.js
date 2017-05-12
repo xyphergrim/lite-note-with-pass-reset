@@ -305,6 +305,8 @@ router.post('/reset/:token', function(req, res) {
         user.resetPasswordToken = undefined;
         user.resetPasswordExpires = undefined;
 
+        // console.log(user.password);
+
         user.save(function(err) {
           req.logIn(user, function(err) {
             done(err, user);
