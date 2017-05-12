@@ -302,16 +302,22 @@ router.post('/reset/:token', function(req, res) {
         }
 
         user.password = req.body.password;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
+        var confirmPassword = req.body.confirmPassword;
 
-        // console.log(user.password);
-
-        user.save(function(err) {
-          req.logIn(user, function(err) {
-            done(err, user);
+        if(user.password === confirmPassword) {
+          user.resetPasswordToken = undefined;
+          user.resetPasswordExpires = undefined;
+          user.save(function(err) {
+            req.logIn(user, function(err) {
+              done(err, user);
+            });
           });
-        });
+        } else {
+          req.flash("error", "Passwords entered don't match.");
+          return res.redirect("/reset/"+user.resetPasswordToken);
+        }
+
+
       });
     },
     function(user, done) {
@@ -326,7 +332,7 @@ router.post('/reset/:token', function(req, res) {
         to: user.email,
         from: 'jc.xypher@gmail.com',
         subject: 'LiteNote password has been changed',
-        text: 'Hello,\n\n' +
+        text: 'Greetings from LiteNote,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
       };
       smtpTransport.sendMail(mailOptions, function(err) {
