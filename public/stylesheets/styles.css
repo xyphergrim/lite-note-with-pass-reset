@@ -162,6 +162,14 @@ textarea {
     margin-bottom: 40px;
 }
 
+.forgot-hr {
+    margin-bottom: 40px;
+}
+
+.reset-hr {
+    margin-bottom: 40px;
+}
+
 #login-btn {
     margin-right: 10px;
 }

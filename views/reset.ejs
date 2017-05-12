@@ -1,6 +1,10 @@
 <% include ./partials/header %>
 
 <div class="container">
+    <h1>Reset Password</h1>
+    <hr class="reset-hr">
+</div>
+<div class="container">
     <form action="/reset/<%= resetPasswordToken %>" method="POST">
       <div class="form-group">
         <label for="password">New Password</label>
