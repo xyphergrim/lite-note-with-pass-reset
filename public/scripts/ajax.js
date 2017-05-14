@@ -4,12 +4,12 @@ $(document).ready(function(){
     var isChecklistOn = false;
     var ta = $("textarea");
     var totalCardCount = $(".card").length;
-    
+
     // if($("#new-note-form:visible")) {
     //   // -1 to negate the .card for adding a new note
     //   totalCardCount--;
     // }
-    
+
     // var archivedCardCount = $(".is-archive").length;
     // alert(totalCardCount);
     // alert(archivedCardCount);
@@ -48,7 +48,7 @@ $(document).ready(function(){
     $("#note-row").on("click", ".note-content", function(){
         $(this).siblings(".text-right").children(".update-btn").show();
     });
-    
+
     // for adding labels to help filter cards
     // $("#note-row").on("click", ".label-btn", function(){
     //   $(this).closest(".card-block").children(".edit-note-form").prepend(
@@ -56,27 +56,27 @@ $(document).ready(function(){
     //     <input type="text" class="form-control label-input" name="labelFilter" placeholder="#label">
     //     `
     //   );
-      
+
     //   $(this).closest(".card-block").children(".edit-note-form").find(".update-btn").show();
     // });
-    
+
     // to allow archiving of cards in case user would rather not delete them
     $("#note-row").on("click", ".archive-btn", function(){
       var archiveInput = $(this).closest(".card-block").children(".edit-note-form").children(".archive-input");
-      
+
       if($(this).hasClass("disabled")) {
         // do nothing
       } else {
         // set the value of archive-input to archive the card
         archiveInput.attr("value", "on");
-        
+
         // set a new class so it is not counted with totalCardCount
         archiveInput.addClass("is-archive");
-  
+
         var archiveCard = true;
-        
+
         $(this).closest(".card-block").children(".edit-note-form").submit();
-        
+
         if(archiveCard) {
           totalCardCount--;
           console.log(totalCardCount);
@@ -160,6 +160,16 @@ $(document).ready(function(){
 
           $(".new-note-text").focus();
         }
+
+        // if(e.which == 13 && $(".note-text-input").is(":focus")) {
+        //   e.preventDefault();
+        //
+        //   $(".edit-note-form").append(
+        //     `
+        //     <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
+        //     `
+        //   );
+        // }
     });
 
     // watch all clicks on the document for submitting notes
@@ -224,7 +234,7 @@ $(document).ready(function(){
     //         );
     //       }
     //     });
-        
+
           // $("#user-input").after(
           // `
           // <div class="col-md-2">
@@ -257,7 +267,7 @@ $(document).ready(function(){
         if(isChecklistOn) {
           var noteItem = $(this).serialize();
         //   console.log(noteItem);
-
+// <button class="dropdown-item label-btn" type="button">Add Label</button>
           $.post("/notes", noteItem, function(data){
             $("#user-input").after(
               `
@@ -269,7 +279,7 @@ $(document).ready(function(){
                               <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="optionsDropdown">
-                              <button class="dropdown-item label-btn" type="button">Add Label</button>
+
                               <button class="dropdown-item archive-btn" type="button">Archive</button>
                             </div>
                           </div>
@@ -314,7 +324,7 @@ $(document).ready(function(){
             $(".checklist-btn").removeClass("active");
             $(".checkbox-txt").remove();
             isChecklistOn = false;
-            
+
             totalCardCount++;
             // if(totalCardCount > 30) {
             //   var items = [];
@@ -322,7 +332,7 @@ $(document).ready(function(){
             //   $(".card").each(function(i, e){
             //     items.push($(e));
             //   });
-      
+
             //   for(var i = 30; i < totalCardCount; i++){
             //     items[i].hide();
             //   }
@@ -372,7 +382,7 @@ $(document).ready(function(){
               );
 
             totalCardCount++;
-            
+
             autosize($(".note-content"));
             $(".new-note-content").val("");
           });
@@ -497,7 +507,7 @@ $(document).ready(function(){
                     this.itemToDelete.remove();
                 }
             });
-            
+
             totalCardCount--;
         }
     });
@@ -542,7 +552,7 @@ $(document).ready(function(){
     // load 30 more cards at a time until all shown
     function showExtraCards(){
       var cardCount = $(".card:visible").length;
-      
+
       if(cardCount < totalCardCount) {
         var items = [];
 
@@ -554,7 +564,7 @@ $(document).ready(function(){
           items[i].show();
         }
       }
-      
+
       if(cardCount === totalCardCount) {
         $("#load-more-notes").hide();
       }

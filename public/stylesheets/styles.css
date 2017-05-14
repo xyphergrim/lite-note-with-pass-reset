@@ -37,6 +37,10 @@ textarea {
     margin-bottom: 15px;
 }
 
+/*.new-note-form {
+  padding: 0.50em;
+}*/
+
 .delete-card-btn {
     border: none;
     background-color: #FFFFA5;
@@ -51,6 +55,10 @@ textarea {
     box-shadow: 8px 8px 20px #888888;
     background-color: #FFFFA5;
 }
+
+/*.card-block {
+  padding: 0.50em;
+}*/
 
 .checklist-btn {
     background-color: #FFFFA5;
