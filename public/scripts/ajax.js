@@ -346,7 +346,7 @@ $(document).ready(function(){
           });
         } else {
           var noteItem = $(this).serialize();
-
+// <button class="dropdown-item label-btn" type="button">Add Label</button>
           $.post("/notes", noteItem, function(data){
               $("#user-input").after(
                `
@@ -358,7 +358,7 @@ $(document).ready(function(){
                               <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="optionsDropdown">
-                              <button class="dropdown-item label-btn" type="button">Add Label</button>
+
                               <button class="dropdown-item archive-btn" type="button">Archive</button>
                             </div>
                           </div>
