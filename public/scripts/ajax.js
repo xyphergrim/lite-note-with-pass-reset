@@ -161,15 +161,19 @@ $(document).ready(function(){
           $(".new-note-text").focus();
         }
 
-        // if(e.which == 13 && $(".note-text-input").is(":focus")) {
-        //   e.preventDefault();
-        //
-        //   $(".edit-note-form").append(
-        //     `
-        //     <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
-        //     `
-        //   );
-        // }
+        if(e.which == 13 && $(".note-text-input").is(":focus")) {
+          e.preventDefault();
+
+          console.log($(this));
+
+          $(".update-btn").before(
+            `
+            <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="">
+            `
+          );
+
+          $(".note-text-input").focus();
+        }
     });
 
     // watch all clicks on the document for submitting notes
