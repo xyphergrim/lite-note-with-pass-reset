@@ -87,9 +87,9 @@ textarea {
     margin-top: 10px;
 }
 
-.jumbotron-ul {
+/*.jumbotron-ul {
     display: inline-block;
-}
+}*/
 
 .input-group {
   margin-bottom: 10px;
@@ -186,10 +186,6 @@ textarea {
     margin-left: 10px;
 }
 
-#done-btn {
-    background-color: #FFFFA5;
-}
-
 #upcoming-features {
     float: right;
 }
@@ -201,6 +197,10 @@ textarea {
 
 #dropdownMenuButton {
     margin-left: 10px;
+}
+
+#checklist-btn {
+  margin-left: 10px;
 }
 
 [contenteditable=true]:empty:before {

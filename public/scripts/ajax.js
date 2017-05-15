@@ -4,6 +4,7 @@ $(document).ready(function(){
     var isChecklistOn = false;
     var ta = $("textarea");
     var totalCardCount = $(".card").length;
+    var currentInput;
 
     // if($("#new-note-form:visible")) {
     //   // -1 to negate the .card for adding a new note
@@ -47,6 +48,11 @@ $(document).ready(function(){
     // show the update-btn (done) when clicking on editable card
     $("#note-row").on("click", ".note-content", function(){
         $(this).siblings(".text-right").children(".update-btn").show();
+    });
+
+    $("#note-row").on("focus", ".note-text-input", function(){
+      currentInput = $(this);
+      console.log(currentInput);
     });
 
     // for adding labels to help filter cards
@@ -149,30 +155,31 @@ $(document).ready(function(){
     $(document).keypress(function(e) {
         // if Enter key is pressed while the note-text-input has focus, and
         // isChecklistOn = true, then append the following content to the checkbox-txt
-        if(e.which == 13 && $(".new-note-text").is(":focus") && isChecklistOn) {
-          e.preventDefault();
-
-          $(".checkbox-txt").append(
-            `
-            <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
-            `
-          );
-
-          $(".new-note-text").focus();
-        }
+        // if(e.which == 13 && $(".new-note-text").is(":focus") && isChecklistOn) {
+        //   e.preventDefault();
+        //
+        //   $(".checkbox-txt").append(
+        //     `
+        //     <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]">
+        //     `
+        //   );
+        //
+        //   $(".new-note-text").focus();
+        // }
 
         if(e.which == 13 && $(".note-text-input").is(":focus")) {
           e.preventDefault();
 
-          console.log($(this));
+          // console.log($(this));
 
-          $(".update-btn").before(
-            `
-            <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="">
-            `
-          );
+          // var currentInput = $(this).find(".note-text-input").is(":focus");
+          // console.log(currentInput);
+          var inputNode = $('<input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="">');
 
-          $(".note-text-input").focus();
+          $(currentInput).closest(".edit-note-form").find(".update-btn").before(inputNode);
+          inputNode.focus();
+
+          // $(".note-text-input").focus();
         }
     });
 
@@ -264,16 +271,28 @@ $(document).ready(function(){
     // });
     //=====================================================
 
+    $("#note-btn").on("click", function(){
+      $(".btn-choice-input").attr("value", "off");
+      $("#new-note-form").submit();
+    });
+
+    $("#checklist-btn").on("click", function(){
+      isChecklistOn = true;
+      $(".btn-choice-input").attr("value", "on");
+      $("#new-note-form").submit();
+    });
+
     // SUBMIT NEW CARD
     $("#new-note-form").submit(function(e){
         e.preventDefault();
 
         if(isChecklistOn) {
           var noteItem = $(this).serialize();
+          // var noteItem = "";
         //   console.log(noteItem);
 // <button class="dropdown-item label-btn" type="button">Add Label</button>
           $.post("/notes", noteItem, function(data){
-            $("#user-input").after(
+            $("#note-row").prepend(
               `
               <div class="col-md-2">
                   <div class="card">
@@ -295,7 +314,9 @@ $(document).ready(function(){
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
                             <input type="hidden" class="archive-input" name="archiveValue" value="off">
                             <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
-                            <div class="hidden-div-${data._id}"></div>
+                            <div class="hidden-div-${data._id}">
+                              <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[0]}">
+                            </div>
                             <div class="text-right">
                                <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                             </div>
@@ -311,22 +332,22 @@ $(document).ready(function(){
             //   <input type="checkbox" class="ckbox">
             //   <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${checklistItem}">
             // </div>
-            for(var i = 0; i < data.checklists.length; i++){
-              $(".hidden-div-"+data._id).append(
-                `
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <input type="hidden" name="checkbox-${ data.checklists[i] }" value="off">
-                    <input type="checkbox" class="ckbox" name="checkbox-${ data.checklists[i] }" aria-label="Checkbox for following text input" ${ data.checkboxes[i] ? 'checked' : null }>
-                  </span>
-                  <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[i]}">
-                </div>
-                `
-              );
-            }
+            // for(var i = 0; i < data.checklists.length; i++){
+            //   $(".hidden-div-"+data._id).append(
+            //     `
+            //     <div class="input-group">
+            //       <span class="input-group-addon">
+            //         <input type="hidden" name="checkbox-${ data.checklists[i] }" value="off">
+            //         <input type="checkbox" class="ckbox" name="checkbox-${ data.checklists[i] }" aria-label="Checkbox for following text input" ${ data.checkboxes[i] ? 'checked' : null }>
+            //       </span>
+            //       <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[i]}">
+            //     </div>
+            //     `
+            //   );
+            // }
 
-            $(".checklist-btn").removeClass("active");
-            $(".checkbox-txt").remove();
+            // $(".checklist-btn").removeClass("active");
+            // $(".checkbox-txt").remove();
             isChecklistOn = false;
 
             totalCardCount++;
@@ -342,17 +363,19 @@ $(document).ready(function(){
             //   }
             // }
 
-            $("#new-note-form").prepend(
-              `
-              <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
-              `
-            );
+            // $("#new-note-form").prepend(
+            //   `
+            //   <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
+            //   `
+            // );
           });
         } else {
           var noteItem = $(this).serialize();
+          // console.log(noteItem);
+          // var noteItem = "";
 // <button class="dropdown-item label-btn" type="button">Add Label</button>
           $.post("/notes", noteItem, function(data){
-              $("#user-input").after(
+              $("#note-row").prepend(
                `
               <div class="col-md-2">
                   <div class="card">
@@ -388,7 +411,7 @@ $(document).ready(function(){
             totalCardCount++;
 
             autosize($(".note-content"));
-            $(".new-note-content").val("");
+            // $(".new-note-content").val("");
           });
         }
     });
@@ -402,14 +425,15 @@ $(document).ready(function(){
         var noteItem = $(this).serialize();
         var actionUrl = $(this).attr("action");
         var $originalItem = $(this).parent(".card-block");
-
+// <button class="dropdown-item label-btn" type="button">Add Label</button>
+  // <button class="dropdown-item label-btn" type="button">Add Label</button>
         $.ajax({
             url: actionUrl,
             data: noteItem,
             type: "PUT",
             originalItem: $originalItem,
             success: function(data){
-              if(data.text === undefined) {
+              if(data.checklists.length > 0) {
                 this.originalItem.html(
                 `
                 <div class="dropdown">
@@ -417,7 +441,7 @@ $(document).ready(function(){
                     <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="optionsDropdown">
-                    <button class="dropdown-item label-btn" type="button">Add Label</button>
+
                     <button class="dropdown-item archive-btn" type="button">Archive</button>
                   </div>
                 </div>
@@ -453,7 +477,7 @@ $(document).ready(function(){
 
                   // find which checkboxes have been "checked," and then strike-through and lighten text
                   var checkBox = $(`[name="checkbox-${data.checklists[i]}"]`);
-                  console.log(checkBox);
+                  // console.log(checkBox);
 
                   if(checkBox.is(":checked")) {
                     checkBox.parents(".input-group").css("text-decoration", "line-through");
@@ -469,7 +493,7 @@ $(document).ready(function(){
                     <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="optionsDropdown">
-                    <button class="dropdown-item label-btn" type="button">Add Label</button>
+
                     <button class="dropdown-item archive-btn" type="button">Archive</button>
                   </div>
                 </div>

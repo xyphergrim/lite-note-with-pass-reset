@@ -120,13 +120,22 @@ router.post("/notes", function(req, res){
       username: req.user.username
     };
     var formData = req.body;
+    // formData.text = "New Note";
     formData.author = author;
     // formData.isChecklist = req.isChecklist;
+
+    if(req.body.btnChoiceValue === "on") {
+        console.log("checklist note card added");
+        formData.checklists = ["New Checklist"];
+    } else {
+      formData.text = "New Note";
+    }
 
     // var formData = {};
     // req.body.note ? formData.text = req.body.note.text : formData.checklists = req.body.checklists;
 
     if(formData.checklists) {
+      console.log("formData Checklists is true");
       // console.log(formData.checklists.length);
         for(var i = 0; i < formData.checklists.length; i++) {
             if(formData.checklists[i] === "") {
