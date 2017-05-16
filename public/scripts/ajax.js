@@ -148,10 +148,19 @@ $(document).ready(function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
 
+    $("#note-row").on("focus", ".note-text-input", function(){
+      $(this).parents(".edit-note-form").find(".update-btn").show();
+    });
+
+    $("#note-row").on("focus", ".note-content", function(){
+      $(this).parents(".edit-note-form").find(".update-btn").show();
+    });
+
     $("#load-more-notes").on("click", function(){
       showExtraCards();
     });
 
+    // append a new checklist text box inside the notecard
     $(document).keypress(function(e) {
         if(e.which == 13 && $(".note-text-input").is(":focus")) {
           e.preventDefault();
@@ -174,88 +183,13 @@ $(document).ready(function(){
     //     }
     // });
 
-    //=====================================================
-    // GET CARDS
-    // $.get("/notes", function(notes){
-    //     notes.forEach(function(note){
-    //       if(note.author.id.equals(currentUser._id)) {
-    //         $("#user-input").after(
-    //         `
-    //         <div class="col-md-2">
-    //             <div class="card">
-    //                 <div class="card-block">
-    //                     <div class="dropdown">
-    //                       <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    //                         <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
-    //                       </button>
-    //                       <div class="dropdown-menu" aria-labelledby="optionsDropdown">
-    //                         <button class="dropdown-item label-btn" type="button">Add Label</button>
-    //                         <button class="dropdown-item archive-btn" type="button">Archive</button>
-    //                         <!--<button class="dropdown-item" type="button">Something else here</button>-->
-    //                       </div>
-    //                     </div>
-    //                     <div class="text-right">
-    //                         <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
-    //                             <i class="fa fa-trash-o" aria-hidden="true"></i>
-    //                         </button>
-    //                     </div>
-    //                     <form class="edit-note-form" action="/notes/${note._id}" method="POST">
-    //                       <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${note.title}">
-    //                         <% if(note.text !== null && note.text !== undefined) { %>
-    //                             <textarea class="note-content" name="text"><%= note.text %></textarea>
-    //                         <% } else { %>
-    //                             <% for(var i = 0; i < note.checklists.length; i++) { %>
-    //                                 <div class="input-group">
-    //                                   <span class="input-group-addon">
-    //                                     <input type="hidden" name="checkbox-<%= note.checklists[i] %>" value="off">
-    //                                     <input type="checkbox" class="ckbox" name="checkbox-<%= note.checklists[i] %>" aria-label="Checkbox for following text input" <%= note.checkboxes[i] ? 'checked' : null %>>
-    //                                   </span>
-    //                                   <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="<%= note.checklists[i] %>">
-    //                                 </div>
-    //                             <% }; %>
-    //                         <% } %>
-    //                         <div class="text-right">
-    //                             <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
-    //                         </div>
-    //                     </form>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //         `
-    //         );
-    //       }
-    //     });
-
-          // $("#user-input").after(
-          // `
-          // <div class="col-md-2">
-          //     <div class="card">
-          //         <div class="card-block">
-          //             <div class="text-right">
-          //                 <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${note._id}">
-          //                     <i class="fa fa-trash-o" aria-hidden="true"></i>
-          //                 </button>
-          //             </div>
-          //             <form class="edit-note-form" action="/notes/${note._id}" method="POST">
-          //                 <textarea name="note[text]">${note.text}</textarea>
-          //                 <div class="text-right">
-          //                     <button type="submit" class="btn btn-secondary btn-sm" id="update-btn">Done</button>
-          //                 </div>
-          //             </form>
-          //             <p class="card-text ${note._id}">${note.text}</p>
-          //         </div>
-          //     </div>
-          // </div>
-          // `
-          // );
-    // });
-    //=====================================================
-
+    // add a new notecard
     $("#note-btn").on("click", function(){
       $(".btn-choice-input").attr("value", "off");
       $("#new-note-form").submit();
     });
 
+    // add a new checklist card
     $("#checklist-btn").on("click", function(){
       isChecklistOn = true;
       $(".btn-choice-input").attr("value", "on");

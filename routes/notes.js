@@ -184,7 +184,14 @@ router.put("/notes/:id", function(req, res){
       for(var i = 0; i < checklistCount.length; i++) {
         if(checklistCount[i] === "") {
             checklistCount.splice(i, 1);
+
+            // if(newNoteData.checkboxes.length > 0) {
+            //   newNoteData.checkboxes.splice(i, 1);
+            // }
+
+            // newCheckCount = checklistCount.length;
             i--;
+            // isSpliced = true;
         }
       }
 
