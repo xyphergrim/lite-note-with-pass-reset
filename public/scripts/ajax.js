@@ -86,7 +86,7 @@ $(document).ready(function(){
         if(archiveCard) {
           totalCardCount--;
           console.log(totalCardCount);
-          $(this).closest(".col-md-2").hide();
+          $(this).closest(".card-col").hide();
         }
       }
     });
@@ -294,7 +294,7 @@ $(document).ready(function(){
           $.post("/notes", noteItem, function(data){
             $("#note-row").prepend(
               `
-              <div class="col-md-2">
+              <div class="col-sm-6 col-md-4 col-lg-3 card-col">
                   <div class="card">
                       <div class="card-block">
                           <div class="dropdown">
@@ -377,7 +377,7 @@ $(document).ready(function(){
           $.post("/notes", noteItem, function(data){
               $("#note-row").prepend(
                `
-              <div class="col-md-2">
+              <div class="col-sm-6 col-md-4 col-lg-3 card-col">
                   <div class="card">
                       <div class="card-block">
                           <div class="dropdown">
@@ -525,7 +525,7 @@ $(document).ready(function(){
         var confirmResponse = confirm("Delete this card?");
 
         if(confirmResponse) {
-            var $itemToDelete = $(this).closest(".col-md-2");
+            var $itemToDelete = $(this).closest(".card-col");
 
             $.ajax({
                 type: "DELETE",

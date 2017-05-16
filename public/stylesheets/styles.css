@@ -4,7 +4,7 @@ body {
 }
 
 textarea {
-    /*width: 100%;*/
+    width: 100%;
     resize: none;
     border: none;
     overflow: auto;
@@ -33,8 +33,20 @@ textarea {
     text-align: center;
 }
 
-.col-md-2 {
+/*.col-md-2 {
     margin-bottom: 15px;
+}*/
+
+.col-sm-6 {
+  margin-bottom: 15px;
+}
+
+.col-md-4 {
+  margin-bottom: 15px;
+}
+
+.col-lg-3 {
+  margin-bottom: 15px;
 }
 
 /*.new-note-form {
@@ -203,18 +215,9 @@ textarea {
   margin-left: 10px;
 }
 
-[contenteditable=true]:empty:before {
-  content: attr(data-placeholder);
-  opacity: .5;
-}
-
 @media (max-width: 991px) {
     .jumbotron {
         height: 530px;
-    }
-
-    #upcoming-features {
-        float: none;
     }
 }
 

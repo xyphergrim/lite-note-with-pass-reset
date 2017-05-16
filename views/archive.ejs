@@ -26,7 +26,7 @@
             <!--</div>-->
             <% notes.forEach(function(note) { %>
                 <% if(note.author.id.equals(currentUser._id) && note.archive === true) { %>
-                    <div class="col-md-2">
+                    <div class="col-sm-6 col-md-4 col-lg-3 card-col">
                         <div class="card">
                             <div class="card-block">
                                 <div class="dropdown">
@@ -69,7 +69,7 @@
                 <% } %>
             <% }); %>
         </div>
-         <button type="button" class="btn btn-primary btn-lg" id="load-more-notes">Load More</button> 
+         <button type="button" class="btn btn-primary btn-lg" id="load-more-notes">Load More</button>
     </div>
 
 <% include ./partials/footer %>
