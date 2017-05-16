@@ -120,9 +120,7 @@ router.post("/notes", function(req, res){
       username: req.user.username
     };
     var formData = req.body;
-    // formData.text = "New Note";
     formData.author = author;
-    // formData.isChecklist = req.isChecklist;
 
     if(req.body.btnChoiceValue === "on") {
         console.log("checklist note card added");
@@ -135,14 +133,14 @@ router.post("/notes", function(req, res){
     // req.body.note ? formData.text = req.body.note.text : formData.checklists = req.body.checklists;
 
     if(formData.checklists) {
-      console.log("formData Checklists is true");
-      // console.log(formData.checklists.length);
-        for(var i = 0; i < formData.checklists.length; i++) {
-            if(formData.checklists[i] === "") {
-                formData.checklists.splice(i, 1);
-                i--;
-            }
-        }
+      // console.log("formData Checklists is true");
+      // // console.log(formData.checklists.length);
+      //   for(var i = 0; i < formData.checklists.length; i++) {
+      //       if(formData.checklists[i] === "") {
+      //           formData.checklists.splice(i, 1);
+      //           i--;
+      //       }
+      //   }
       // create an array with as many spaces as there are checklists
       formData.checkboxes = new Array(req.body.checklists.length);
     }
@@ -167,18 +165,32 @@ router.put("/notes/:id", function(req, res){
           newNoteData.archive = isArchive;
       }
     } else {
+      // create brand new object from checkboxValues and req.body.checklists
+      var newNoteData = {};
+
+      var checklistCount = req.body.checklists;
+
       // set checkboxes var equal to req.body
       var checkboxes = Object.assign({}, req.body);
       // remove the checklists array
       delete checkboxes.checklists;
       // remove the title because we only need checkboxes
       delete checkboxes.title;
-      // remove the label
-      //   delete checkboxes.labelFilter;
       // remove the archive variable
       delete checkboxes.archiveValue;
       // create an empty array
       var checkboxValues = [];
+
+      for(var i = 0; i < checklistCount.length; i++) {
+        if(checklistCount[i] === "") {
+            checklistCount.splice(i, 1);
+            i--;
+        }
+      }
+
+      // create an array with as many spaces as there are checklists
+      newNoteData.checkboxes = new Array(checklistCount.length);
+
       // iterate over the object and create a new array that indicates if the checkbox was checked or not
       for(checkbox in checkboxes) {
         // console.log("checkbox is: " + checkbox);
@@ -194,22 +206,10 @@ router.put("/notes/:id", function(req, res){
           var isArchive = true;
       }
 
-    //   var labelArray =
-
-    //   if(req.params.label === null || req.params.label === undefined) {
-    //     var labelArray = [];
-    //     labelArray.push(req.body.labelFilter);
-    //   } else {
-    //     var labelArray = req.params.label;
-    //     labelArray.push(req.body.labelFilter);
-    //   }
-
-      // create brand new object from checkboxValues and req.body.checklists
-      var newNoteData = {};
-    //   newNoteData.label.push(req.body.labelFilter);
+      // assign values to the new object
       newNoteData.archive = isArchive;
       newNoteData.title = req.body.title;
-      newNoteData.checklists = req.body.checklists;
+      newNoteData.checklists = checklistCount;
       newNoteData.checkboxes = checkboxValues;
     }
 
