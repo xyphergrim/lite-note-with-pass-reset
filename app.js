@@ -70,6 +70,7 @@ passport.deserializeUser(function(id, done){
 
 // middleware to run for every route
 app.use(function(req, res, next){
+    res.locals.currentPage = "";
     res.locals.currentUser = req.user;
     res.locals.error = req.flash("error");
     res.locals.success = req.flash("success");

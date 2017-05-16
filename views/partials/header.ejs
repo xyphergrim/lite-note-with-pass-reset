@@ -28,11 +28,15 @@
                 <% if(!currentUser) { %>
                   <!-- do nothing -->
                 <% } else { %>
-                  <form class="form-inline" id="new-note-form" action="/notes" method="POST">
-                    <input type="hidden" class="btn-choice-input" name="btnChoiceValue" value="off">
-                    <button type="button" class="btn btn-secondary btn-sm" id="note-btn"><i class="fa fa-plus" aria-hidden="true"></i> New Note</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="checklist-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> New Checklist</button>
-                  </form>
+                  <% if(currentPage === "archive") { %>
+                    <!-- don't show new note and new checklist buttons on archive page -->
+                  <% } else { %>
+                    <form class="form-inline" id="new-note-form" action="/notes" method="POST">
+                      <input type="hidden" class="btn-choice-input" name="btnChoiceValue" value="off">
+                      <button type="button" class="btn btn-secondary btn-sm" id="note-btn"><i class="fa fa-plus" aria-hidden="true"></i> New Note</button>
+                      <button type="button" class="btn btn-secondary btn-sm" id="checklist-btn"><i class="fa fa-check-square-o" aria-hidden="true"></i> New Checklist</button>
+                    </form>
+                  <% } %>
                 <% } %>
               </ul>
               <ul class="navbar-nav ml-auto">

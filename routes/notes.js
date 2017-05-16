@@ -107,8 +107,7 @@ router.get("/notes/archive", function(req, res){
             if(req.xhr) {
                 res.json(notes);
             } else {
-                var page = "archive";
-                res.render("archive", {notes: notes, page: page});
+                res.render("archive", {notes: notes, currentPage: "archive"});
             }
         }
     });
