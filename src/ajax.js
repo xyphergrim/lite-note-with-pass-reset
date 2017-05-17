@@ -2,9 +2,12 @@
 
 $(document).ready(function(){
     var isChecklistOn = false;
+    var isUndo = false;
     var ta = $("textarea");
     var totalCardCount = $(".card").length;
     var currentInput;
+    var oldChild;
+    var timeoutID;
 
     // if($("#new-note-form:visible")) {
     //   // -1 to negate the .card for adding a new note
@@ -196,6 +199,13 @@ $(document).ready(function(){
       $("#new-note-form").submit();
     });
 
+    // if the user clicks "Undo" in the info alert then restore/post the recently deleted note
+    $(".container-fluid").on("click", ".alert-link", function(){
+      $(".alert-info").remove();
+      $("#note-row").prepend(oldChild);
+      window.clearTimeout(timeoutID);
+    });
+
     // SUBMIT NEW CARD
     $("#new-note-form").submit(function(e){
         e.preventDefault();
@@ -275,7 +285,7 @@ $(document).ready(function(){
             //   `
             // );
           });
-        } else {
+        } else if(!isChecklistOn) {
           var noteItem = $(this).serialize();
 
           $.post("/notes", noteItem, function(data){
@@ -317,19 +327,27 @@ $(document).ready(function(){
             autosize($(".note-content"));
           });
         }
+        // else if(isUndo) {
+        //   $("#note-row").prepend(oldChild);
+        //
+        //   var postThis = oldChild.find(".edit-note-form");
+        //   var noteItem = postThis.serialize();
+        //
+        //   $.post("/notes", noteItem, function(data){
+        //     // posting to /notes
+        //   });
+        //
+        //   isUndo = false;
+        // }
     });
 
     // EDIT CARD - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
 
-        // console.log("in here in here");
-
-        var noteItem = $(this).serialize();
-        var actionUrl = $(this).attr("action");
-        var $originalItem = $(this).parent(".card-block");
-
-        // console.log(noteItem);
+          var noteItem = $(this).serialize();
+          var actionUrl = $(this).attr("action");
+          var $originalItem = $(this).parent(".card-block");
 
         $.ajax({
             url: actionUrl,
@@ -418,30 +436,43 @@ $(document).ready(function(){
                 );
                 autosize($(".note-content"));
               }
-
             }
         });
     });
 
     // DELETE CARD
     $("#note-row").on("click", ".delete-card-btn", function(){
+        // var parentNode = document.getElementById("note-row");
+        var toDeleteItem = $(this).closest(".card-col");
+        oldChild = toDeleteItem.remove();
+        // console.log(oldChild);
+        $(".container-fluid").prepend(
+          `
+          <div class="container">
+            <div class="alert alert-info" role="alert">
+              <strong>Note Deleted</strong> -- <a class="alert-link" href="#">Undo</a>
+            </div>
+          </div>
+          `
+        );
+        $(".alert-info").delay(8000).fadeOut();
 
-        var confirmResponse = confirm("Delete this card?");
+        var $itemToDelete = $(this).closest(".card-col");
+        var actionUrl = $(this).attr("data-id");
 
-        if(confirmResponse) {
-            var $itemToDelete = $(this).closest(".card-col");
+        // sets a timeout (delay) to give the user time to undo accidental deletions
+        timeoutID = window.setTimeout(function(){
+          $.ajax({
+              type: "DELETE",
+              url: "/notes/" + actionUrl,
+              itemToDelete: $itemToDelete,
+              success: function(data){
+                  this.itemToDelete.remove();
+              }
+          });
 
-            $.ajax({
-                type: "DELETE",
-                url: "/notes/" + $(this).attr("data-id"),
-                itemToDelete: $itemToDelete,
-                success: function(data){
-                    this.itemToDelete.remove();
-                }
-            });
-
-            totalCardCount--;
-        }
+          totalCardCount--;
+        }, 8000);
     });
 
     // checks which elements are checked on page load for styling
