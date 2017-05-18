@@ -1,6 +1,7 @@
 /* global $ autosize */
 
 $(document).ready(function(){
+    // global variables
     var isChecklistOn = false;
     var isUndo = false;
     var ta = $("textarea");
@@ -18,6 +19,7 @@ $(document).ready(function(){
     // alert(totalCardCount);
     // alert(archivedCardCount);
 
+    // enable the autosize.js on textareas
     autosize(ta);
 
     // checks which elements are checked on page load for styling
@@ -26,23 +28,20 @@ $(document).ready(function(){
     // if cardCount > 30 cards hide the rest
     hideExtraCards();
 
+    // tooltip and modal activators
     $("[data-toggle='tooltip']").tooltip({trigger: "hover"});
-
     $("#register-btn").on("click", function(){
         $("#login-btn").removeClass("active");
         $("#register-btn").addClass("active");
     });
-
     $("#login-btn").on("click", function(){
         $("#login-btn").addClass("active");
         $("#register-btn").removeClass("active");
     });
-
     $('#login-modal').on('hidden.bs.modal', function (e) {
         $("#login-btn").removeClass("active");
         $("#login-form").find(".form-control").val('');
     });
-
     $('#register-modal').on('hidden.bs.modal', function (e) {
         $("#register-btn").removeClass("active");
         $("#new-user-form").find(".form-control").val('');
@@ -55,7 +54,7 @@ $(document).ready(function(){
 
     $("#note-row").on("focus", ".note-text-input", function(){
       currentInput = $(this);
-      console.log(currentInput);
+      // console.log(currentInput);
     });
 
     // for adding labels to help filter cards
@@ -88,45 +87,45 @@ $(document).ready(function(){
 
         if(archiveCard) {
           totalCardCount--;
-          console.log(totalCardCount);
+          // console.log(totalCardCount);
           $(this).closest(".card-col").hide();
         }
       }
     });
 
     // toggle a checklist feature on note card
-    $(".checklist-btn").on("click", function(){
-        $(".checklist-btn").toggleClass("active");
-
-        if($(".checklist-btn").hasClass("active")) {
-            isChecklistOn = true;
-
-            $("#done-btn").attr("value", "true");
-
-            $(".new-note-content").remove();
-
-            $("#new-note-form").prepend(
-            `
-            <div class="checkbox-txt">
-              <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]" placeholder="Walk the dog">
-            </div>
-            `
-            );
-
-
-        } else {
-            // alert("checklist-btn is NOT active now");
-            // need to remove checklist and clear note card
-            $("#new-note-form").prepend(
-              `
-              <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
-              `
-            );
-
-            $(".checkbox-txt").remove();
-            isChecklistOn = false;
-        }
-    });
+    // $(".checklist-btn").on("click", function(){
+    //     $(".checklist-btn").toggleClass("active");
+    //
+    //     if($(".checklist-btn").hasClass("active")) {
+    //         isChecklistOn = true;
+    //
+    //         $("#done-btn").attr("value", "true");
+    //
+    //         $(".new-note-content").remove();
+    //
+    //         $("#new-note-form").prepend(
+    //         `
+    //         <div class="checkbox-txt">
+    //           <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]" placeholder="Walk the dog">
+    //         </div>
+    //         `
+    //         );
+    //
+    //
+    //     } else {
+    //         // alert("checklist-btn is NOT active now");
+    //         // need to remove checklist and clear note card
+    //         $("#new-note-form").prepend(
+    //           `
+    //           <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
+    //           `
+    //         );
+    //
+    //         $(".checkbox-txt").remove();
+    //         isChecklistOn = false;
+    //     }
+    // });
 
     // when todo is checked then strike through and other styling
     $("#note-row").on("change", ".ckbox", function(){
@@ -143,22 +142,21 @@ $(document).ready(function(){
         }
     });
 
+    // show update-btn if the following elements are focused or clicked on
     $("#note-row").on("click", ".note-text-input", function(){
       $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
     });
-
     $("#note-row").on("click", ".title-text", function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
-
     $("#note-row").on("focus", ".note-text-input", function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
-
     $("#note-row").on("focus", ".note-content", function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
 
+    // load more notes if button is clicked
     $("#load-more-notes").on("click", function(){
       showExtraCards();
     });
@@ -199,11 +197,11 @@ $(document).ready(function(){
       $("#new-note-form").submit();
     });
 
-    // if the user clicks "Undo" in the info alert then restore/post the recently deleted note
+    // if the user clicks "Undo" in the warning alert then restore the recently deleted note
     $(".container-fluid").on("click", ".alert-link", function(){
-      $(".alert-info").remove();
+      $(".alert-warning").remove();
       $("#note-row").prepend(oldChild);
-      window.clearTimeout(timeoutID);
+      window.clearTimeout(timeoutID); // clear the timeout so it doesn't delete
     });
 
     // SUBMIT NEW CARD
@@ -262,8 +260,6 @@ $(document).ready(function(){
               );
             }
 
-            // $(".checklist-btn").removeClass("active");
-            // $(".checkbox-txt").remove();
             isChecklistOn = false;
 
             totalCardCount++;
@@ -278,12 +274,6 @@ $(document).ready(function(){
             //     items[i].hide();
             //   }
             // }
-
-            // $("#new-note-form").prepend(
-            //   `
-            //   <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
-            //   `
-            // );
           });
         } else if(!isChecklistOn) {
           var noteItem = $(this).serialize();
@@ -327,18 +317,6 @@ $(document).ready(function(){
             autosize($(".note-content"));
           });
         }
-        // else if(isUndo) {
-        //   $("#note-row").prepend(oldChild);
-        //
-        //   var postThis = oldChild.find(".edit-note-form");
-        //   var noteItem = postThis.serialize();
-        //
-        //   $.post("/notes", noteItem, function(data){
-        //     // posting to /notes
-        //   });
-        //
-        //   isUndo = false;
-        // }
     });
 
     // EDIT CARD - PUT
@@ -442,20 +420,20 @@ $(document).ready(function(){
 
     // DELETE CARD
     $("#note-row").on("click", ".delete-card-btn", function(){
-        // var parentNode = document.getElementById("note-row");
+        // assign the item to delete into a temp variable - oldChild
         var toDeleteItem = $(this).closest(".card-col");
         oldChild = toDeleteItem.remove();
         // console.log(oldChild);
         $(".container-fluid").prepend(
           `
           <div class="container">
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-warning" role="alert">
               <strong>Note Deleted</strong> -- <a class="alert-link" href="#">Undo</a>
             </div>
           </div>
           `
         );
-        $(".alert-info").delay(8000).fadeOut();
+        $(".alert-warning").delay(8000).fadeOut(); // 8 seconds
 
         var $itemToDelete = $(this).closest(".card-col");
         var actionUrl = $(this).attr("data-id");
@@ -472,7 +450,7 @@ $(document).ready(function(){
           });
 
           totalCardCount--;
-        }, 8000);
+        }, 8000); // 8 seconds
     });
 
     // checks which elements are checked on page load for styling
