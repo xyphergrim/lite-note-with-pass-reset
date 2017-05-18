@@ -124,9 +124,9 @@ router.post("/notes", function(req, res){
 
     if(req.body.btnChoiceValue === "on") {
         console.log("checklist note card added");
-        formData.checklists = ["New Checklist"];
+        formData.checklists = [""];
     } else {
-      formData.text = "New Note";
+      formData.text = "";
     }
 
     // var formData = {};
@@ -157,7 +157,7 @@ router.post("/notes", function(req, res){
 
 // UPDATE ROUTE
 router.put("/notes/:id", function(req, res){
-    if(req.body.text) {
+    if(req.body.text || req.body.text === "") {
       var newNoteData = req.body;
 
       if(req.body.archiveValue === "on") {

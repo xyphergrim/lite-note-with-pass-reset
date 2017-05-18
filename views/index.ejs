@@ -77,10 +77,10 @@
                                     <input type="hidden" class="archive-input" name="archiveValue" value="off">
                                   <input type="text" class="form-control title-text" name="title" placeholder="Title" value="<%= note.title %>">
                                     <% if(note.text !== null && note.text !== undefined) { %>
-                                        <textarea class="note-content" name="text"><%= note.text %></textarea>
+                                        <textarea class="note-content" name="text" placeholder="What's on your mind?"><%= note.text %></textarea>
                                     <% } else { %>
                                         <% if(note.checklists.length <= 0) { %>
-                                          <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="">
+                                          <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" placeholder="Walk the dog" value="">
                                         <% } else { %>
                                           <% for(var i = 0; i < note.checklists.length; i++) { %>
                                               <div class="input-group">

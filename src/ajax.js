@@ -254,7 +254,7 @@ $(document).ready(function(){
                     <input type="hidden" name="checkbox-${ data.checklists[i] }" value="off">
                     <input type="checkbox" class="ckbox" name="checkbox-${ data.checklists[i] }" aria-label="Checkbox for following text input" ${ data.checkboxes[i] ? 'checked' : null }>
                   </span>
-                  <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[i]}">
+                  <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" placeholder="Walk the dog" value="${data.checklists[i]}">
                 </div>
                 `
               );
@@ -301,7 +301,7 @@ $(document).ready(function(){
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
                             <input type="hidden" class="archive-input" name="archiveValue" value="off">
                             <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
-                              <textarea class="note-content" name="text">${data.text}</textarea>
+                              <textarea class="note-content" name="text" placeholder="What's on your mind?">${data.text}</textarea>
                               <div class="text-right">
                                   <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                               </div>
@@ -405,7 +405,7 @@ $(document).ready(function(){
                 <form class="edit-note-form" action="/notes/${data._id}" method="POST">
                     <input type="hidden" class="archive-input" name="archiveValue" value="off">
                     <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
-                    <textarea class="note-content" name="text">${data.text}</textarea>
+                    <textarea class="note-content" name="text" placeholder="What's on your mind?">${data.text}</textarea>
                     <div class="text-right">
                         <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
                     </div>
