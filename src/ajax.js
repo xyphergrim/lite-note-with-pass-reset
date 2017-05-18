@@ -88,7 +88,7 @@ $(document).ready(function(){
         if(archiveCard) {
           totalCardCount--;
           // console.log(totalCardCount);
-          $(this).closest(".card-col").hide();
+          $(this).closest(".card-col").hide(800);
         }
       }
     });
