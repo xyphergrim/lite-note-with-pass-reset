@@ -30,3 +30,4 @@ Possible features:
 - Labels/tags for filtering of cards
 - Theme/color feature for note cards
 - Edit Profile page
+- Projects board
