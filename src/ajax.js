@@ -7,8 +7,9 @@ $(document).ready(function(){
     var ta = $("textarea");
     var totalCardCount = $(".card").length;
     var currentInput;
-    var oldChild;
-    var timeoutID;
+    var oldPin; // for pinning cards
+    var oldChild; // for undo deletion
+    var timeoutID; // to delay deletion
 
     // if($("#new-note-form:visible")) {
     //   // -1 to negate the .card for adding a new note
@@ -75,7 +76,7 @@ $(document).ready(function(){
       if($(this).hasClass("disabled")) {
         // do nothing
       } else {
-        // set the value of archive-input to archive the card
+        // set the value of archive-input to "on" to archive the card
         archiveInput.attr("value", "on");
 
         // set a new class so it is not counted with totalCardCount
@@ -93,8 +94,56 @@ $(document).ready(function(){
       }
     });
 
-    // when todo is checked then strike through and other styling
+    // to allow pinning of cards
+    $("#note-row").on("click", ".pin-btn", function(){
+      var pinInput = $(this).closest(".card-block").find(".pin-input");
+      var toPinItem = $(this).closest(".card-col");
+
+      // set the value of pin-input to "on" to pin the card
+      pinInput.attr("value", "on");
+
+      pinInput.addClass("active-pin");
+
+      $(this).closest(".card-block").children(".edit-note-form").submit();
+
+      oldPin = toPinItem.remove();
+
+      $("#pin-row").prepend(oldPin);
+    });
+
+    // to unpin cards
+    $("#pin-row").on("click", ".pin-btn", function(){
+      var pinInput = $(this).closest(".card-block").find(".pin-input");
+      var toPinItem = $(this).closest(".card-col");
+
+      // set the value of pin-input to "off" to unpin the card
+      pinInput.attr("value", "off");
+
+      pinInput.removeClass("active-pin");
+
+      $(this).closest(".card-block").children(".edit-note-form").submit();
+
+      oldPin = toPinItem.remove();
+
+      $("#note-row").prepend(oldPin);
+    })
+
+    // when todo is checked then strike through and other styling - NEED TO REFACTOR THIS INTO A FUNCTION
     $("#note-row").on("change", ".ckbox", function(){
+        console.log(this);
+        if($(this).is(":checked")) {
+            console.log(this);
+            $(this).parents(".input-group").css("text-decoration", "line-through");
+            $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
+            $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+        } else if(!($(this).is(":checked"))) {
+            $(this).parents(".input-group").css("text-decoration", "none");
+            $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(70, 74, 76, 1)");
+            $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+        }
+    });
+    //========
+    $("#pin-row").on("change", ".ckbox", function(){
         console.log(this);
         if($(this).is(":checked")) {
             console.log(this);
@@ -119,6 +168,19 @@ $(document).ready(function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
     $("#note-row").on("focus", ".note-content", function(){
+      $(this).parents(".edit-note-form").find(".update-btn").show();
+    });
+    //=======
+    $("#pin-row").on("click", ".note-text-input", function(){
+      $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+    });
+    $("#pin-row").on("click", ".title-text", function(){
+      $(this).parents(".edit-note-form").find(".update-btn").show();
+    });
+    $("#pin-row").on("focus", ".note-text-input", function(){
+      $(this).parents(".edit-note-form").find(".update-btn").show();
+    });
+    $("#pin-row").on("focus", ".note-content", function(){
       $(this).parents(".edit-note-form").find(".update-btn").show();
     });
 
@@ -191,12 +253,16 @@ $(document).ready(function(){
                               <button class="dropdown-item archive-btn" type="button">Archive</button>
                             </div>
                           </div>
+                          <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                            <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                          </button>
                           <div class="text-right">
                               <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                                   <i class="fa fa-trash-o" aria-hidden="true"></i>
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <input type="hidden" class="pin-input" name="pinValue" value="off">
                             <input type="hidden" class="archive-input" name="archiveValue" value="off">
                             <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                             <div class="hidden-div-${data._id}">
@@ -259,12 +325,16 @@ $(document).ready(function(){
                               <button class="dropdown-item archive-btn" type="button">Archive</button>
                             </div>
                           </div>
+                          <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                            <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                          </button>
                           <div class="text-right">
                               <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                                   <i class="fa fa-trash-o" aria-hidden="true"></i>
                               </button>
                           </div>
                           <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                            <input type="hidden" class="pin-input" name="pinValue" value="off">
                             <input type="hidden" class="archive-input" name="archiveValue" value="off">
                             <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
                               <textarea class="note-content" name="text" placeholder="What's on your mind?">${data.text}</textarea>
@@ -293,6 +363,8 @@ $(document).ready(function(){
           var actionUrl = $(this).attr("action");
           var $originalItem = $(this).parent(".card-block");
 
+          console.log(noteItem);
+
         $.ajax({
             url: actionUrl,
             data: noteItem,
@@ -311,6 +383,9 @@ $(document).ready(function(){
                     <button class="dropdown-item archive-btn" type="button">Archive</button>
                   </div>
                 </div>
+                <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                  <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                </button>
                 <div class="text-right">
                     <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                         <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -326,6 +401,22 @@ $(document).ready(function(){
                 </form>
                 `
                 );
+
+                // console.log(data.isPinned);
+
+                if(data.isPinned) {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input active-pin" name="pinValue" value="on">
+                    `
+                  );
+                } else {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input" name="pinValue" value="off">
+                    `
+                  );
+                }
 
                 // iterate through checkboxes and append them to the DOM
                 for(var i = 0; i < data.checklists.length; i++ ) {
@@ -363,6 +454,9 @@ $(document).ready(function(){
                     <button class="dropdown-item archive-btn" type="button">Archive</button>
                   </div>
                 </div>
+                <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                  <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                </button>
                 <div class="text-right">
                     <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
                         <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -378,6 +472,21 @@ $(document).ready(function(){
                 </form>
                 `
                 );
+
+                if(data.isPinned) {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input active-pin" name="pinValue" value="on">
+                    `
+                  );
+                } else {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input" name="pinValue" value="off">
+                    `
+                  );
+                }
+
                 autosize($(".note-content"));
               }
             }

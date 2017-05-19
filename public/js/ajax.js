@@ -9,8 +9,9 @@ $(document).ready(function () {
   var ta = $("textarea");
   var totalCardCount = $(".card").length;
   var currentInput;
-  var oldChild;
-  var timeoutID;
+  var oldPin; // for pinning cards
+  var oldChild; // for undo deletion
+  var timeoutID; // to delay deletion
 
   // if($("#new-note-form:visible")) {
   //   // -1 to negate the .card for adding a new note
@@ -77,7 +78,7 @@ $(document).ready(function () {
     if ($(this).hasClass("disabled")) {
       // do nothing
     } else {
-      // set the value of archive-input to archive the card
+      // set the value of archive-input to "on" to archive the card
       archiveInput.attr("value", "on");
 
       // set a new class so it is not counted with totalCardCount
@@ -95,8 +96,56 @@ $(document).ready(function () {
     }
   });
 
-  // when todo is checked then strike through and other styling
+  // to allow pinning of cards
+  $("#note-row").on("click", ".pin-btn", function () {
+    var pinInput = $(this).closest(".card-block").find(".pin-input");
+    var toPinItem = $(this).closest(".card-col");
+
+    // set the value of pin-input to "on" to pin the card
+    pinInput.attr("value", "on");
+
+    pinInput.addClass("active-pin");
+
+    $(this).closest(".card-block").children(".edit-note-form").submit();
+
+    oldPin = toPinItem.remove();
+
+    $("#pin-row").prepend(oldPin);
+  });
+
+  // to unpin cards
+  $("#pin-row").on("click", ".pin-btn", function () {
+    var pinInput = $(this).closest(".card-block").find(".pin-input");
+    var toPinItem = $(this).closest(".card-col");
+
+    // set the value of pin-input to "off" to unpin the card
+    pinInput.attr("value", "off");
+
+    pinInput.removeClass("active-pin");
+
+    $(this).closest(".card-block").children(".edit-note-form").submit();
+
+    oldPin = toPinItem.remove();
+
+    $("#note-row").prepend(oldPin);
+  });
+
+  // when todo is checked then strike through and other styling - NEED TO REFACTOR THIS INTO A FUNCTION
   $("#note-row").on("change", ".ckbox", function () {
+    console.log(this);
+    if ($(this).is(":checked")) {
+      console.log(this);
+      $(this).parents(".input-group").css("text-decoration", "line-through");
+      $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
+      $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+    } else if (!$(this).is(":checked")) {
+      $(this).parents(".input-group").css("text-decoration", "none");
+      $(this).parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(70, 74, 76, 1)");
+      $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+    }
+  });
+  //========
+  $("#pin-row").on("change", ".ckbox", function () {
     console.log(this);
     if ($(this).is(":checked")) {
       console.log(this);
@@ -121,6 +170,19 @@ $(document).ready(function () {
     $(this).parents(".edit-note-form").find(".update-btn").show();
   });
   $("#note-row").on("focus", ".note-content", function () {
+    $(this).parents(".edit-note-form").find(".update-btn").show();
+  });
+  //=======
+  $("#pin-row").on("click", ".note-text-input", function () {
+    $(this).parents(".edit-note-form").children(".text-right").children(".update-btn").show();
+  });
+  $("#pin-row").on("click", ".title-text", function () {
+    $(this).parents(".edit-note-form").find(".update-btn").show();
+  });
+  $("#pin-row").on("focus", ".note-text-input", function () {
+    $(this).parents(".edit-note-form").find(".update-btn").show();
+  });
+  $("#pin-row").on("focus", ".note-content", function () {
     $(this).parents(".edit-note-form").find(".update-btn").show();
   });
 
@@ -180,7 +242,7 @@ $(document).ready(function () {
       var noteItem = $(this).serialize();
 
       $.post("/notes", noteItem, function (data) {
-        $("#note-row").prepend("\n              <div class=\"col-sm-6 col-md-4 col-lg-3 card-col\">\n                  <div class=\"card\">\n                      <div class=\"card-block\">\n                          <div class=\"dropdown\">\n                            <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                              <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                            </button>\n                            <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n                              <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                            </div>\n                          </div>\n                          <div class=\"text-right\">\n                              <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                                  <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                              </button>\n                          </div>\n                          <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                            <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                            <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                            <div class=\"hidden-div-" + data._id + "\">\n\n                            </div>\n                            <div class=\"text-right\">\n                               <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                            </div>\n                          </form>\n                      </div>\n                  </div>\n              </div>\n              ");
+        $("#note-row").prepend("\n              <div class=\"col-sm-6 col-md-4 col-lg-3 card-col\">\n                  <div class=\"card\">\n                      <div class=\"card-block\">\n                          <div class=\"dropdown\">\n                            <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                              <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                            </button>\n                            <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n                              <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                            </div>\n                          </div>\n                          <button type=\"button\" class=\"btn btn-secondary btn-sm pin-btn\">\n                            <i class=\"fa fa-thumb-tack\" aria-hidden=\"true\"></i>\n                          </button>\n                          <div class=\"text-right\">\n                              <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                                  <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                              </button>\n                          </div>\n                          <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                            <input type=\"hidden\" class=\"pin-input\" name=\"pinValue\" value=\"off\">\n                            <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                            <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                            <div class=\"hidden-div-" + data._id + "\">\n\n                            </div>\n                            <div class=\"text-right\">\n                               <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                            </div>\n                          </form>\n                      </div>\n                  </div>\n              </div>\n              ");
 
         for (var i = 0; i < data.checklists.length; i++) {
           $(".hidden-div-" + data._id).append("\n                <div class=\"input-group\">\n                  <span class=\"input-group-addon\">\n                    <input type=\"hidden\" name=\"checkbox-" + data.checklists[i] + "\" value=\"off\">\n                    <input type=\"checkbox\" class=\"ckbox\" name=\"checkbox-" + data.checklists[i] + "\" aria-label=\"Checkbox for following text input\" " + (data.checkboxes[i] ? 'checked' : null) + ">\n                  </span>\n                  <input type=\"text\" class=\"form-control note-text-input\" aria-label=\"Text input with checkbox\" name=\"checklists[]\" placeholder=\"Walk the dog\" value=\"" + data.checklists[i] + "\">\n                </div>\n                ");
@@ -205,7 +267,7 @@ $(document).ready(function () {
       var noteItem = $(this).serialize();
 
       $.post("/notes", noteItem, function (data) {
-        $("#note-row").prepend("\n              <div class=\"col-sm-6 col-md-4 col-lg-3 card-col\">\n                  <div class=\"card\">\n                      <div class=\"card-block\">\n                          <div class=\"dropdown\">\n                            <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                              <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                            </button>\n                            <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n\n                              <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                            </div>\n                          </div>\n                          <div class=\"text-right\">\n                              <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                                  <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                              </button>\n                          </div>\n                          <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                            <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                            <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                              <textarea class=\"note-content\" name=\"text\" placeholder=\"What's on your mind?\">" + data.text + "</textarea>\n                              <div class=\"text-right\">\n                                  <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                              </div>\n                          </form>\n                      </div>\n                  </div>\n              </div>\n               ");
+        $("#note-row").prepend("\n              <div class=\"col-sm-6 col-md-4 col-lg-3 card-col\">\n                  <div class=\"card\">\n                      <div class=\"card-block\">\n                          <div class=\"dropdown\">\n                            <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                              <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                            </button>\n                            <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n\n                              <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                            </div>\n                          </div>\n                          <button type=\"button\" class=\"btn btn-secondary btn-sm pin-btn\">\n                            <i class=\"fa fa-thumb-tack\" aria-hidden=\"true\"></i>\n                          </button>\n                          <div class=\"text-right\">\n                              <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                                  <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                              </button>\n                          </div>\n                          <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                            <input type=\"hidden\" class=\"pin-input\" name=\"pinValue\" value=\"off\">\n                            <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                            <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                              <textarea class=\"note-content\" name=\"text\" placeholder=\"What's on your mind?\">" + data.text + "</textarea>\n                              <div class=\"text-right\">\n                                  <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                              </div>\n                          </form>\n                      </div>\n                  </div>\n              </div>\n               ");
 
         totalCardCount++;
 
@@ -222,6 +284,8 @@ $(document).ready(function () {
     var actionUrl = $(this).attr("action");
     var $originalItem = $(this).parent(".card-block");
 
+    console.log(noteItem);
+
     $.ajax({
       url: actionUrl,
       data: noteItem,
@@ -229,7 +293,15 @@ $(document).ready(function () {
       originalItem: $originalItem,
       success: function success(data) {
         if (data.checklists.length > 0) {
-          this.originalItem.html("\n                <div class=\"dropdown\">\n                  <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                    <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                  </button>\n                  <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n\n                    <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                  </div>\n                </div>\n                <div class=\"text-right\">\n                    <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                        <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                    </button>\n                </div>\n                <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                  <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                  <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                  <div class=\"hidden-div-" + data._id + "\"></div>\n                  <div class=\"text-right\">\n                     <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                  </div>\n                </form>\n                ");
+          this.originalItem.html("\n                <div class=\"dropdown\">\n                  <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                    <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                  </button>\n                  <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n\n                    <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                  </div>\n                </div>\n                <button type=\"button\" class=\"btn btn-secondary btn-sm pin-btn\">\n                  <i class=\"fa fa-thumb-tack\" aria-hidden=\"true\"></i>\n                </button>\n                <div class=\"text-right\">\n                    <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                        <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                    </button>\n                </div>\n                <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                  <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                  <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                  <div class=\"hidden-div-" + data._id + "\"></div>\n                  <div class=\"text-right\">\n                     <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                  </div>\n                </form>\n                ");
+
+          // console.log(data.isPinned);
+
+          if (data.isPinned) {
+            $(".edit-note-form").prepend("\n                    <input type=\"hidden\" class=\"pin-input active-pin\" name=\"pinValue\" value=\"on\">\n                    ");
+          } else {
+            $(".edit-note-form").prepend("\n                    <input type=\"hidden\" class=\"pin-input\" name=\"pinValue\" value=\"off\">\n                    ");
+          }
 
           // iterate through checkboxes and append them to the DOM
           for (var i = 0; i < data.checklists.length; i++) {
@@ -245,7 +317,14 @@ $(document).ready(function () {
             }
           }
         } else {
-          this.originalItem.html("\n                <div class=\"dropdown\">\n                  <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                    <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                  </button>\n                  <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n\n                    <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                  </div>\n                </div>\n                <div class=\"text-right\">\n                    <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                        <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                    </button>\n                </div>\n                <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                    <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                    <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                    <textarea class=\"note-content\" name=\"text\" placeholder=\"What's on your mind?\">" + data.text + "</textarea>\n                    <div class=\"text-right\">\n                        <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                    </div>\n                </form>\n                ");
+          this.originalItem.html("\n                <div class=\"dropdown\">\n                  <button class=\"btn btn-secondary btn-sm dropdown-toggle more-options-btn\" type=\"button\" id=\"optionsDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n                    <i class=\"fa fa-ellipsis-v fa-2\" aria-hidden=\"true\"></i>\n                  </button>\n                  <div class=\"dropdown-menu\" aria-labelledby=\"optionsDropdown\">\n\n                    <button class=\"dropdown-item archive-btn\" type=\"button\">Archive</button>\n                  </div>\n                </div>\n                <button type=\"button\" class=\"btn btn-secondary btn-sm pin-btn\">\n                  <i class=\"fa fa-thumb-tack\" aria-hidden=\"true\"></i>\n                </button>\n                <div class=\"text-right\">\n                    <button type=\"submit\" class=\"btn btn-secondary btn-sm delete-card-btn\" data-id=\"" + data._id + "\">\n                        <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n                    </button>\n                </div>\n                <form class=\"edit-note-form\" action=\"/notes/" + data._id + "\" method=\"POST\">\n                    <input type=\"hidden\" class=\"archive-input\" name=\"archiveValue\" value=\"off\">\n                    <input type=\"text\" class=\"form-control title-text\" name=\"title\" placeholder=\"Title\" value=\"" + data.title + "\">\n                    <textarea class=\"note-content\" name=\"text\" placeholder=\"What's on your mind?\">" + data.text + "</textarea>\n                    <div class=\"text-right\">\n                        <button type=\"submit\" class=\"btn btn-secondary btn-sm update-btn\">Done</button>\n                    </div>\n                </form>\n                ");
+
+          if (data.isPinned) {
+            $(".edit-note-form").prepend("\n                    <input type=\"hidden\" class=\"pin-input active-pin\" name=\"pinValue\" value=\"on\">\n                    ");
+          } else {
+            $(".edit-note-form").prepend("\n                    <input type=\"hidden\" class=\"pin-input\" name=\"pinValue\" value=\"off\">\n                    ");
+          }
+
           autosize($(".note-content"));
         }
       }

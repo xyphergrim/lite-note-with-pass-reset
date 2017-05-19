@@ -33,10 +33,6 @@ textarea {
     text-align: center;
 }
 
-/*.col-md-2 {
-    margin-bottom: 15px;
-}*/
-
 .col-sm-6 {
   margin-bottom: 15px;
 }
@@ -49,9 +45,15 @@ textarea {
   margin-bottom: 15px;
 }
 
-/*.new-note-form {
-  padding: 0.50em;
-}*/
+.pin-btn {
+  border: none;
+  background-color: #FFFFA5;
+  float: left;
+}
+
+.pin-btn:focus {
+  box-shadow: none;
+}
 
 .delete-card-btn {
     border: none;
@@ -67,10 +69,6 @@ textarea {
     box-shadow: 8px 8px 20px #888888;
     background-color: #FFFFA5;
 }
-
-/*.card-block {
-  padding: 0.50em;
-}*/
 
 .checklist-btn {
     background-color: #FFFFA5;
@@ -152,10 +150,6 @@ textarea {
 
 .title-text:focus {
   background-color: #FFFFA5;
-}
-
-.reminder-field {
-    display: none;
 }
 
 .more-options-btn {

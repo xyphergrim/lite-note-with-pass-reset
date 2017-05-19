@@ -164,6 +164,15 @@ router.put("/notes/:id", function(req, res){
           var isArchive = true;
           newNoteData.archive = isArchive;
       }
+
+      if(req.body.pinValue === "on") {
+          var isPinned = true;
+          newNoteData.isPinned = isPinned;
+      } else if(req.body.pinValue === "off") {
+          var isPinned = false;
+          newNoteData.isPinned = isPinned;
+          // console.log(newNoteData.isPinned);
+      }
     } else {
       // create brand new object from checkboxValues and req.body.checklists
       var newNoteData = {};
@@ -178,6 +187,8 @@ router.put("/notes/:id", function(req, res){
       delete checkboxes.title;
       // remove the archive variable
       delete checkboxes.archiveValue;
+      // remove the pin variable
+      delete checkboxes.pinValue;
       // create an empty array
       var checkboxValues = [];
 
@@ -213,7 +224,14 @@ router.put("/notes/:id", function(req, res){
           var isArchive = true;
       }
 
+      if(req.body.pinValue === "on") {
+          var isPinned = true;
+      } else if(req.body.pinValue === "off") {
+          var isPinned = false;
+      }
+
       // assign values to the new object
+      newNoteData.isPinned = isPinned;
       newNoteData.archive = isArchive;
       newNoteData.title = req.body.title;
       newNoteData.checklists = checklistCount;

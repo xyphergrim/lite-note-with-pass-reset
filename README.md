@@ -31,3 +31,4 @@ Possible features:
 - Theme/color feature for note cards
 - Edit Profile page
 - Projects board
+- Pin card
