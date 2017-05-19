@@ -90,44 +90,10 @@ $(document).ready(function () {
       if (archiveCard) {
         totalCardCount--;
         // console.log(totalCardCount);
-        $(this).closest(".card-col").hide(800);
+        $(this).closest(".card-col").hide();
       }
     }
   });
-
-  // toggle a checklist feature on note card
-  // $(".checklist-btn").on("click", function(){
-  //     $(".checklist-btn").toggleClass("active");
-  //
-  //     if($(".checklist-btn").hasClass("active")) {
-  //         isChecklistOn = true;
-  //
-  //         $("#done-btn").attr("value", "true");
-  //
-  //         $(".new-note-content").remove();
-  //
-  //         $("#new-note-form").prepend(
-  //         `
-  //         <div class="checkbox-txt">
-  //           <input type="text" class="form-control new-note-text" aria-label="Text input with checkbox" name="checklists[]" placeholder="Walk the dog">
-  //         </div>
-  //         `
-  //         );
-  //
-  //
-  //     } else {
-  //         // alert("checklist-btn is NOT active now");
-  //         // need to remove checklist and clear note card
-  //         $("#new-note-form").prepend(
-  //           `
-  //           <textarea class="new-note-content" placeholder="What's on your mind?" name="text"></textarea>
-  //           `
-  //         );
-  //
-  //         $(".checkbox-txt").remove();
-  //         isChecklistOn = false;
-  //     }
-  // });
 
   // when todo is checked then strike through and other styling
   $("#note-row").on("change", ".ckbox", function () {
