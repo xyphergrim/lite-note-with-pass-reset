@@ -28,6 +28,7 @@
     <!-- content -->
     <a name="toTop">
     <div class="container-fluid">
+        <!-- pinned notes -->
         <div class="row" id="pin-row">
           <% notes.forEach(function(note) { %>
             <% if(note.author.id.equals(currentUser._id) && note.isPinned === true) { %>
@@ -44,7 +45,7 @@
                               <button class="dropdown-item archive-btn" type="button">Archive</button>
                             </div>
                           </div>
-                          <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                          <button type="button" class="btn btn-secondary btn-sm pin-btn active">
                             <i class="fa fa-thumb-tack" aria-hidden="true"></i>
                           </button>
                           <div class="text-right">
@@ -84,6 +85,7 @@
           <% }); %>
         </div>
         <hr>
+        <!-- unpinned notes -->
         <div class="row" id="note-row">
             <% notes.forEach(function(note) { %>
                 <% if(note.author.id.equals(currentUser._id) && note.archive === false && note.isPinned === false) { %>

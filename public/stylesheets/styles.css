@@ -87,19 +87,11 @@ textarea {
     color: black;
 }
 
-/*.note-content:focus {*/
-/*    background-color: rgba(25, 25, 25, .1);*/
-/*}*/
-
 .update-btn {
     display: none;
     background-color: #FFFFA5;
     margin-top: 10px;
 }
-
-/*.jumbotron-ul {
-    display: inline-block;
-}*/
 
 .input-group {
   margin-bottom: 10px;
@@ -162,11 +154,6 @@ textarea {
     box-shadow: none;
     /*-webkit-box-shadow: none;*/
 }
-
-/* removes arrow on bootstrap dropdown */
-/*.dropdown-toggle::after {*/
-/*    display:none*/
-/*}*/
 
 .dropdown-toggle.more-options-btn::after {
     display: none;

@@ -98,33 +98,35 @@ $(document).ready(function () {
 
   // to allow pinning of cards
   $("#note-row").on("click", ".pin-btn", function () {
+    $(this).addClass("active");
+
     var pinInput = $(this).closest(".card-block").find(".pin-input");
     var toPinItem = $(this).closest(".card-col");
-
+    // console.log(toPinItem);
     // set the value of pin-input to "on" to pin the card
     pinInput.attr("value", "on");
-
     pinInput.addClass("active-pin");
 
     $(this).closest(".card-block").children(".edit-note-form").submit();
-
+    // console.log(toPinItem);
     oldPin = toPinItem.remove();
-
+    console.log(oldPin);
     $("#pin-row").prepend(oldPin);
   });
 
   // to unpin cards
   $("#pin-row").on("click", ".pin-btn", function () {
+    $(this).removeClass("active");
+    console.log("in here");
     var pinInput = $(this).closest(".card-block").find(".pin-input");
     var toPinItem = $(this).closest(".card-col");
 
     // set the value of pin-input to "off" to unpin the card
     pinInput.attr("value", "off");
-
     pinInput.removeClass("active-pin");
 
     $(this).closest(".card-block").children(".edit-note-form").submit();
-
+    consoel.log("did it post?");
     oldPin = toPinItem.remove();
 
     $("#note-row").prepend(oldPin);
@@ -284,7 +286,8 @@ $(document).ready(function () {
     var actionUrl = $(this).attr("action");
     var $originalItem = $(this).parent(".card-block");
 
-    console.log(noteItem);
+    // console.log(noteItem);
+    // debugger;
 
     $.ajax({
       url: actionUrl,
