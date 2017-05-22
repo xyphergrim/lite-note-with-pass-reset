@@ -96,7 +96,10 @@ $(document).ready(function(){
 
     // to allow pinning of cards
     $("#note-row").on("click", ".pin-btn", function(){
+      // console.log($(this));
       $(this).addClass("active");
+      $(this).css("background-color", "gray"); //#e6e6e6 i believe this property must be rgba
+      // console.log($(this).attr("class"));
 
       var pinInput = $(this).closest(".card-block").find(".pin-input");
       var toPinItem = $(this).closest(".card-col");
@@ -124,11 +127,11 @@ $(document).ready(function(){
       pinInput.removeClass("active-pin");
 
       $(this).closest(".card-block").children(".edit-note-form").submit();
-      consoel.log("did it post?");
+      console.log("did it post?");
       oldPin = toPinItem.remove();
 
       $("#note-row").prepend(oldPin);
-    })
+    });
 
     // when todo is checked then strike through and other styling - NEED TO REFACTOR THIS INTO A FUNCTION
     $("#note-row").on("change", ".ckbox", function(){
@@ -357,8 +360,147 @@ $(document).ready(function(){
         }
     });
 
-    // EDIT CARD - PUT
+    // EDIT CARD #note-row - PUT
     $("#note-row").on("submit", ".edit-note-form", function(e){
+        e.preventDefault();
+
+          var noteItem = $(this).serialize();
+          var actionUrl = $(this).attr("action");
+          var $originalItem = $(this).parent(".card-block");
+
+          // console.log(noteItem);
+          // debugger;
+
+        $.ajax({
+            url: actionUrl,
+            data: noteItem,
+            type: "PUT",
+            originalItem: $originalItem,
+            success: function(data){
+              if(data.checklists.length > 0) {
+                this.originalItem.html(
+                `
+                <div class="dropdown">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+
+                    <button class="dropdown-item archive-btn" type="button">Archive</button>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                  <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                </button>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                  <input type="hidden" class="archive-input" name="archiveValue" value="off">
+                  <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
+                  <div class="hidden-div-${data._id}"></div>
+                  <div class="text-right">
+                     <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+                  </div>
+                </form>
+                `
+                );
+
+                // console.log(data.isPinned);
+
+                if(data.isPinned) {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input active-pin" name="pinValue" value="on">
+                    `
+                  );
+                } else {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input" name="pinValue" value="off">
+                    `
+                  );
+                }
+
+                // iterate through checkboxes and append them to the DOM
+                for(var i = 0; i < data.checklists.length; i++ ) {
+                  $(".hidden-div-"+data._id).append(
+                    `
+                    <div class="input-group">
+                      <span class="input-group-addon">
+                        <input type="hidden" name="checkbox-${ data.checklists[i] }" value="off">
+                        <input type="checkbox" class="ckbox" name="checkbox-${ data.checklists[i] }" aria-label="Checkbox for following text input" ${ data.checkboxes[i] ? 'checked' : null }>
+                      </span>
+                      <input type="text" class="form-control note-text-input" aria-label="Text input with checkbox" name="checklists[]" value="${data.checklists[i]}">
+                    </div>
+                    `
+                  );
+
+                  // find which checkboxes have been "checked," and then strike-through and lighten text
+                  var checkBox = $(`[name="checkbox-${data.checklists[i]}"]`);
+                  // console.log(checkBox);
+
+                  if(checkBox.is(":checked")) {
+                    checkBox.parents(".input-group").css("text-decoration", "line-through");
+                    checkBox.parent(".input-group-addon").siblings(".note-text-input").css("color", "rgba(0, 0, 0, 0.5)");
+                  }
+
+                }
+              } else {
+                this.originalItem.html(
+                `
+                <div class="dropdown">
+                  <button class="btn btn-secondary btn-sm dropdown-toggle more-options-btn" type="button" id="optionsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-ellipsis-v fa-2" aria-hidden="true"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="optionsDropdown">
+
+                    <button class="dropdown-item archive-btn" type="button">Archive</button>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm pin-btn">
+                  <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                </button>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-secondary btn-sm delete-card-btn" data-id="${data._id}">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form class="edit-note-form" action="/notes/${data._id}" method="POST">
+                    <input type="hidden" class="archive-input" name="archiveValue" value="off">
+                    <input type="text" class="form-control title-text" name="title" placeholder="Title" value="${data.title}">
+                    <textarea class="note-content" name="text" placeholder="What's on your mind?">${data.text}</textarea>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-secondary btn-sm update-btn">Done</button>
+                    </div>
+                </form>
+                `
+                );
+
+                if(data.isPinned) {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input active-pin" name="pinValue" value="on">
+                    `
+                  );
+                } else {
+                  $(".edit-note-form").prepend(
+                    `
+                    <input type="hidden" class="pin-input" name="pinValue" value="off">
+                    `
+                  );
+                }
+
+                autosize($(".note-content"));
+              }
+            }
+        });
+    });
+
+    // EDIT CARD #pin-row - PUT
+    $("#pin-row").on("submit", ".edit-note-form", function(e){
         e.preventDefault();
 
           var noteItem = $(this).serialize();

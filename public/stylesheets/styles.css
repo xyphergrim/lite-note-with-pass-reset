@@ -18,6 +18,10 @@ textarea {
     font-family: 'Assistant', serif;
 }
 
+/*.active {
+  background-color: #e6e6e6;
+}*/
+
 .navbar {
     background-color: #fff;
     border: none;

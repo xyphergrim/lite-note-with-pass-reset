@@ -115,41 +115,52 @@ router.get("/notes/archive", function(req, res){
 
 // POST ROUTE
 router.post("/notes", function(req, res){
-    var author = {
-      id: req.user._id,
-      username: req.user.username
-    };
-    var formData = req.body;
-    formData.author = author;
+  var isChecklist = false;
+    // var author = {
+    //   id: req.user._id,
+    //   username: req.user.username
+    // };
+    // var formData = req.body;
+    // formData.author = author;
 
     if(req.body.btnChoiceValue === "on") {
+      isChecklist = true;
         console.log("checklist note card added");
-        formData.checklists = [""];
+        // formData.checklists = [""];
+        var note = new Note({
+          author: {
+            id: req.user._id,
+            username: req.user.username
+          },
+          checklists: [""],
+          checkboxes: [false]
+        });
     } else {
-      formData.text = "";
+      var note = new Note({
+        author: {
+          id: req.user._id,
+          username: req.user.username
+        },
+        text: ""
+      });
+      // formData.text = "";
     }
 
     // var formData = {};
     // req.body.note ? formData.text = req.body.note.text : formData.checklists = req.body.checklists;
 
-    if(formData.checklists) {
-      // console.log("formData Checklists is true");
-      // // console.log(formData.checklists.length);
-      //   for(var i = 0; i < formData.checklists.length; i++) {
-      //       if(formData.checklists[i] === "") {
-      //           formData.checklists.splice(i, 1);
-      //           i--;
-      //       }
-      //   }
-      // create an array with as many spaces as there are checklists
-      formData.checkboxes = new Array(req.body.checklists.length);
-    }
+    // if(isChecklist) {
+    //   // create an array for checkboxes with checklists
+    //   note.checkboxes = new Array(note.checklists.length);
+    // }
 
-    Note.create(formData, function(err, newlyCreated){
+    note.save();
+
+    Note.create(note, function(err, newlyCreated){
         if(err) {
             console.log(err);
         } else {
-          console.log(formData);
+          console.log(note);
             res.json(newlyCreated);
         }
     });
@@ -173,6 +184,8 @@ router.put("/notes/:id", function(req, res){
           newNoteData.isPinned = isPinned;
           // console.log(newNoteData.isPinned);
       }
+
+      // newNoteData.save();
     } else {
       // create brand new object from checkboxValues and req.body.checklists
       var newNoteData = {};
