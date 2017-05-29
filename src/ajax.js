@@ -94,11 +94,17 @@ $(document).ready(function(){
       }
     });
 
+    $(".pin-btn").on("click", function(){
+      // console.log($(this));
+      $(this).css('background-color', 'red');
+    });
+
     // to allow pinning of cards
     $("#note-row").on("click", ".pin-btn", function(){
-      console.log($(this));
-      $(this).addClass("active");
-      $(this).css("background-color", "rgba(230, 230, 230)"); //#e6e6e6 i believe this property must be rgba
+      // console.log($(this));
+      // $(this).addClass("active");
+      // var thePinBtn = $(".pin-btn").hasClass("active");
+      // thePinBtn.css("background-color", "rgb(230, 230, 230)"); //#e6e6e6 i believe this property must be rgba
       // console.log($(this).attr("class"));
 
       var pinInput = $(this).closest(".card-block").find(".pin-input");
@@ -117,7 +123,7 @@ $(document).ready(function(){
 
     // to unpin cards
     $("#pin-row").on("click", ".pin-btn", function(){
-      $(this).removeClass("active");
+      // $(this).removeClass("active");
       // console.log("in here");
       var pinInput = $(this).closest(".card-block").find(".pin-input");
       var toPinItem = $(this).closest(".card-col");
